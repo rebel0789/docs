@@ -1,11 +1,11 @@
 ---
-title: WebSocket Stream
-description: Real-time alert delivery with zero latency
+title: WebSocket
+description: Live alert stream with zero latency
 ---
 
-<Info>
-**WebSocket requires Pro or Enterprise tier.** Free tier users can poll `/alerts/latest` instead.
-</Info>
+<Note>
+WebSocket requires **Pro** or **Enterprise** tier.
+</Note>
 
 ## Endpoint
 
@@ -13,7 +13,7 @@ description: Real-time alert delivery with zero latency
 wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY
 ```
 
-## Quick Example
+## Example
 
 <CodeGroup>
 
@@ -25,30 +25,27 @@ const ws = new WebSocket(
 ws.onmessage = (event) => {
   const msg = JSON.parse(event.data);
 
-  if (msg.type === "connected") {
-    console.log("✅ Connected to alert stream");
-  }
-
-  if (msg.type === "alert") {
-    const a = msg.data;
-    console.log(`🔔 ${a.side} ${a.outcome} @ ${a.entry_price}`);
-    console.log(`   $${a.usdc_value} | Signal: ${a.signal_score}`);
-    console.log(`   ${a.event_title}`);
+  switch (msg.type) {
+    case "connected":
+      console.log("Connected —", msg.tier, "tier");
+      break;
+    case "alert":
+      const a = msg.data;
+      console.log(`${a.side} ${a.outcome} @ ${a.entry_price}`);
+      console.log(`$${a.usdc_value} | score ${a.signal_score}`);
+      console.log(a.event_title);
+      break;
   }
 };
 
-// Keep-alive heartbeat (required every 30s)
+// Required — send ping every 25s to stay connected
 setInterval(() => {
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send("ping");
-  }
+  if (ws.readyState === WebSocket.OPEN) ws.send("ping");
 }, 25000);
 ```
 
 ```python Python
-import asyncio
-import json
-import websockets
+import asyncio, json, websockets
 
 async def listen():
     uri = "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
@@ -57,20 +54,21 @@ async def listen():
             msg = json.loads(message)
             if msg["type"] == "alert":
                 a = msg["data"]
-                print(f"🔔 {a['side']} {a['outcome']} @ {a['entry_price']}")
-                print(f"   ${a['usdc_value']} | Signal: {a['signal_score']}")
-                print(f"   {a['event_title']}")
+                print(f"{a['side']} {a['outcome']} @ {a['entry_price']}")
+                print(f"${a['usdc_value']} | score {a['signal_score']}")
+                print(a["event_title"])
+                print()
 
 asyncio.run(listen())
 ```
 
 </CodeGroup>
 
-## Message Types
+## Messages
 
 ### `connected`
 
-Sent once when the connection is established.
+Sent once when you connect.
 
 ```json
 {
@@ -82,7 +80,7 @@ Sent once when the connection is established.
 
 ### `alert`
 
-Sent whenever a new insider alert is detected. The `data` field contains the full [Alert object](/reference/alert-object).
+New insider alert detected. `data` is the full [Alert object](/reference/alert-object).
 
 ```json
 {
@@ -96,53 +94,32 @@ Sent whenever a new insider alert is detected. The `data` field contains the ful
     "usdc_value": 2100.0,
     "signal_score": 72,
     "event_title": "Will ETH hit $5000 by April?",
-    "category": "crypto",
-    "created_at": "2026-02-27 12:00:15"
+    "category": "crypto"
   }
 }
 ```
 
 ### `pong`
 
-Response to your `ping` heartbeat messages.
-
-```json
-{
-  "type": "pong"
-}
-```
-
-## Heartbeat
-
-You **must** send a `ping` message at least every 30 seconds to keep the connection alive. The server responds with a `pong`.
-
-```javascript
-setInterval(() => {
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send("ping");
-  }
-}, 25000);
-```
+Response to your `ping`. Server closes connections that don't ping within 30 seconds.
 
 ## Reconnection
 
-If the connection drops, implement exponential backoff:
+If you get disconnected, back off exponentially:
 
 ```javascript
-let reconnectDelay = 1000;
+let delay = 1000;
 
-ws.onclose = () => {
-  setTimeout(() => {
-    reconnectDelay = Math.min(reconnectDelay * 2, 30000);
-    connect(); // your connect function
-  }, reconnectDelay);
-};
-
-ws.onopen = () => {
-  reconnectDelay = 1000; // reset on success
-};
+function connect() {
+  const ws = new WebSocket("wss://polychadsbot.xyz/ws/alerts?api_key=KEY");
+  ws.onopen = () => { delay = 1000; };
+  ws.onclose = () => {
+    setTimeout(connect, delay);
+    delay = Math.min(delay * 2, 30000);
+  };
+}
 ```
 
 <Warning>
-The WebSocket endpoint uses `api_key` as a query parameter (not the `Authorization` header). Make sure to URL-encode your key if it contains special characters.
+The key goes in the query string (`api_key=`), not the Authorization header. WebSocket headers aren't universally supported.
 </Warning>

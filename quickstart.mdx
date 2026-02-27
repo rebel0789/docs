@@ -1,36 +1,32 @@
 ---
 title: Quick Start
-description: Get your first alert in under a minute
+description: Your first alert in under a minute
 ---
 
-## Step-by-Step
-
 <Steps>
-  <Step title="Get your API key">
-    Contact us on [Telegram](https://t.me/polychads) to receive your API key. Choose between **Free**, **Pro**, or **Enterprise** tiers.
+  <Step title="Get a key">
+    DM [@alrerat](https://t.me/alrerat) on Telegram. You'll get a key like `pc_Kr_Ohz...`.
   </Step>
 
-  <Step title="Verify your key works">
+  <Step title="Check your key">
     ```bash
     curl -H "Authorization: Bearer YOUR_KEY" \
       https://polychadsbot.xyz/api/v1/me
     ```
 
-    You should see your key info including tier and rate limits.
+    You'll see your tier, rate limit, and today's usage.
   </Step>
 
-  <Step title="Fetch the latest alerts">
+  <Step title="Pull latest alerts">
     ```bash
     curl -H "Authorization: Bearer YOUR_KEY" \
       "https://polychadsbot.xyz/api/v1/alerts/latest?limit=5"
     ```
 
-    This returns the 5 most recent insider alerts.
+    Returns the 5 most recent insider alerts with signal scores, prices, and wallet data.
   </Step>
 
-  <Step title="Connect to WebSocket (Pro+)">
-    For real-time streaming, connect via WebSocket:
-
+  <Step title="Go real-time (Pro+)">
     ```javascript
     const ws = new WebSocket(
       "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
@@ -39,28 +35,32 @@ description: Get your first alert in under a minute
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
       if (msg.type === "alert") {
-        console.log("🔔 New alert:", msg.data);
-        console.log(`  ${msg.data.side} ${msg.data.outcome} @ ${msg.data.entry_price}`);
-        console.log(`  $${msg.data.usdc_value} | Signal: ${msg.data.signal_score}`);
+        console.log(msg.data.event_title);
+        console.log(`${msg.data.side} ${msg.data.outcome} — $${msg.data.usdc_value}`);
       }
     };
+
+    // Keep-alive every 25s
+    setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) ws.send("ping");
+    }, 25000);
     ```
   </Step>
 </Steps>
 
-## What's Next?
+## Next
 
 <CardGroup cols={2}>
-  <Card title="REST API" icon="code" href="/api-reference/overview">
-    Explore all available endpoints
+  <Card title="Endpoints" icon="code" href="/api-reference/overview">
+    Full REST API reference
   </Card>
   <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
-    Set up real-time streaming
+    Real-time streaming guide
   </Card>
   <Card title="Signal Scores" icon="chart-bar" href="/reference/signal-score">
-    Understand alert quality scoring
+    What the numbers mean
   </Card>
   <Card title="Pricing" icon="gem" href="/reference/tiers">
-    Compare tier features
+    Free vs Pro vs Enterprise
   </Card>
 </CardGroup>

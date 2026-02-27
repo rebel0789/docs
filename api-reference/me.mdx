@@ -1,12 +1,10 @@
 ---
 title: Get My Info
 api: GET /me
-description: Check your API key's tier, limits, and usage
+description: Your API key details and usage
 ---
 
-## Response
-
-Returns information about your API key including tier, rate limits, and today's request count.
+Check your tier, rate limits, and how many requests you've used today.
 
 <RequestExample>
 
@@ -34,19 +32,13 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 
 </ResponseExample>
 
-## Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Name assigned to this key |
+| Field | Type | What it tells you |
+|-------|------|-------------------|
+| `name` | string | Label for this key |
 | `tier` | string | `free`, `pro`, or `enterprise` |
-| `rate_limit` | string | Your rate limit (e.g. `300/min`) |
-| `websocket` | bool | Whether WebSocket access is enabled |
-| `webhooks` | bool | Whether webhook delivery is enabled |
-| `realtime` | bool | Whether you get real-time data (vs 5-min delay) |
-| `max_page_size` | int | Max results per page for `/alerts` |
-| `requests_today` | int | API requests made today |
-
-<Tip>
-Use this endpoint to check your remaining quota before hitting rate limits.
-</Tip>
+| `rate_limit` | string | Your limit (e.g. `300/min`) |
+| `websocket` | bool | WebSocket access enabled |
+| `webhooks` | bool | Webhook delivery enabled |
+| `realtime` | bool | Real-time data (vs 5-min delay) |
+| `max_page_size` | int | Max results per page |
+| `requests_today` | int | Requests used today |

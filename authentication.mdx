@@ -1,21 +1,19 @@
 ---
 title: Authentication
-description: Secure your API requests with Bearer token authentication
+description: How to authenticate API requests
 ---
 
-## API Keys
+Every request needs an API key in the `Authorization` header.
 
-All API requests require an API key passed in the `Authorization` header using Bearer token format.
-
-```bash
+```
 Authorization: Bearer YOUR_API_KEY
 ```
 
-<Info>
-Contact us on [Telegram](https://t.me/polychads) to receive your API key and choose your tier.
-</Info>
+## Get a key
 
-## Making Requests
+DM [@alrerat](https://t.me/alrerat) on Telegram. Tell us what you're building and we'll set you up with the right tier.
+
+## Try it
 
 <CodeGroup>
 
@@ -27,52 +25,32 @@ curl -H "Authorization: Bearer pc_your_key_here" \
 ```python Python
 import requests
 
-resp = requests.get(
+r = requests.get(
     "https://polychadsbot.xyz/api/v1/me",
     headers={"Authorization": "Bearer pc_your_key_here"}
 )
-print(resp.json())
+print(r.json())
 ```
 
 ```javascript JavaScript
-const resp = await fetch("https://polychadsbot.xyz/api/v1/me", {
-  headers: { "Authorization": `Bearer ${apiKey}` }
+const r = await fetch("https://polychadsbot.xyz/api/v1/me", {
+  headers: { Authorization: `Bearer ${apiKey}` }
 });
-const data = await resp.json();
+const data = await r.json();
 ```
 
 </CodeGroup>
 
-## Key Format
+If your key is valid, you'll get back your tier info and usage stats.
 
-API keys follow the format `pc_` followed by a random string:
+## Key format
+
+Keys start with `pc_` followed by a random string:
 
 ```
 pc_Kr_Ohzog-pwKB64HmOk7uGf-Q86Zde5kpyD1F2IVDzA
 ```
 
 <Warning>
-**Keep your key secret.** API keys cannot be retrieved after creation — store them securely. Never expose keys in client-side code or public repositories.
+Keys can't be recovered after creation. Store them somewhere safe. Don't commit them to public repos.
 </Warning>
-
-## Verify Your Key
-
-Use the `/me` endpoint to verify your key is working and check your tier:
-
-```bash
-curl -H "Authorization: Bearer YOUR_KEY" \
-  https://polychadsbot.xyz/api/v1/me
-```
-
-```json Response
-{
-  "name": "MyApp",
-  "tier": "pro",
-  "rate_limit": "300/min",
-  "websocket": true,
-  "webhooks": false,
-  "realtime": true,
-  "max_page_size": 50,
-  "requests_today": 0
-}
-```

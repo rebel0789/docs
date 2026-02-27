@@ -1,53 +1,37 @@
 ---
 title: Rate Limits
-description: Request rate limiting per API key
+description: Request limits per API key
 ---
 
-Rate limits are enforced using a **1-minute sliding window** per API key.
+Limits use a 1-minute sliding window per key.
 
-## Limits by Tier
+| Tier | Limit |
+|------|-------|
+| Free | 60/min |
+| Pro | 300/min |
+| Enterprise | Unlimited |
 
-| Tier | Rate Limit | Enforcement |
-|------|-----------|-------------|
-| **Free** | 60 req/min | `429` with `Retry-After: 60` |
-| **Pro** | 300 req/min | `429` with `Retry-After: 60` |
-| **Enterprise** | Unlimited | No rate limiting |
-
-## Rate Limit Headers
-
-When you hit the rate limit, the response includes:
+## When you hit the limit
 
 ```
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60
-Content-Type: application/json
 
-{
-  "detail": "Rate limit exceeded. pro tier: 300 req/min."
-}
+{"detail": "Rate limit exceeded. pro tier: 300 req/min."}
 ```
 
-## Checking Your Usage
-
-Use `GET /me` to check how many requests you've made today:
+## Check your usage
 
 ```bash
 curl -H "Authorization: Bearer YOUR_KEY" \
   https://polychadsbot.xyz/api/v1/me
 ```
 
-```json
-{
-  "tier": "pro",
-  "rate_limit": "300/min",
-  "requests_today": 142
-}
-```
+The `requests_today` field shows your daily count.
 
-<Tip>
-**Best practices:**
-- Cache responses when possible
+## Tips
+
 - Use WebSocket instead of polling for real-time data
+- Cache responses where possible
+- Back off exponentially on `429`
 - Use webhooks for event-driven architectures
-- Implement exponential backoff on `429` responses
-</Tip>

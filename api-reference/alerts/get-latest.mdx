@@ -1,18 +1,14 @@
 ---
 title: Get Latest Alerts
 api: GET /alerts/latest
-description: Retrieve the most recent insider alerts
+description: Most recent insider alerts
 ---
 
-## Parameters
+Returns the latest alerts, sorted newest first.
 
 <ParamField query="limit" type="integer" default="10">
-  Number of alerts to return. Range: 1–50.
+  How many to return. Max 50.
 </ParamField>
-
-## Response
-
-Returns an array of [Alert objects](/reference/alert-object), sorted newest first.
 
 <RequestExample>
 
@@ -24,20 +20,21 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 ```python Python
 import requests
 
-resp = requests.get(
+r = requests.get(
     "https://polychadsbot.xyz/api/v1/alerts/latest",
     headers={"Authorization": "Bearer YOUR_KEY"},
     params={"limit": 2}
 )
-alerts = resp.json()
+for alert in r.json():
+    print(f"{alert['side']} {alert['outcome']} — ${alert['usdc_value']} — score {alert['signal_score']}")
 ```
 
 ```javascript JavaScript
-const resp = await fetch(
+const r = await fetch(
   "https://polychadsbot.xyz/api/v1/alerts/latest?limit=2",
   { headers: { Authorization: `Bearer ${apiKey}` } }
 );
-const alerts = await resp.json();
+const alerts = await r.json();
 ```
 
 </RequestExample>
@@ -50,7 +47,7 @@ const alerts = await resp.json();
     "id": 2220,
     "alert_type": "fresh_accumulator",
     "wallet_address": "0x9B3b4e3bD0e9c72FF8b1A3c...",
-    "event_title": "US strikes Iran by March 31, 2026?",
+    "event_title": "US strikes Iran by March 31?",
     "event_slug": "us-strikes-iran-by-march-31-2026",
     "side": "BUY",
     "outcome": "Yes",

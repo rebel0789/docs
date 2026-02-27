@@ -1,70 +1,53 @@
 ---
 title: Webhooks
-description: Receive alerts via HTTP POST to your server
+description: Get alerts pushed to your server via HTTP POST
 ---
 
-<Info>
-**Webhooks require Enterprise tier.** [Contact us](https://t.me/polychads) to upgrade.
-</Info>
+<Note>
+Webhooks are **Enterprise** only. DM [@alrerat](https://t.me/alrerat) to upgrade.
+</Note>
 
-## How It Works
+## How it works
 
-1. Register a webhook URL with optional filters
-2. When a matching alert fires, we send a `POST` request to your URL
-3. Your server responds with `200` to acknowledge receipt
+Register a URL. When an alert matches your filters, we POST it to your endpoint. You respond `200` to confirm receipt.
 
-## Create a Webhook
+## Create
 
 ```bash
 curl -X POST \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "url": "https://your-app.com/webhook/polychads",
+    "url": "https://your-app.com/webhook",
     "categories": "crypto,world",
     "min_signal": 40
   }' \
   https://polychadsbot.xyz/api/v1/webhooks
 ```
 
-### Parameters
+| Field | Required | Description |
+|-------|----------|-------------|
+| `url` | Yes | Your HTTPS endpoint |
+| `categories` | No | Comma-separated filter |
+| `min_signal` | No | Minimum signal score |
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `url` | string | ✅ | Your HTTPS endpoint URL |
-| `categories` | string | ❌ | Comma-separated category filter |
-| `min_signal` | integer | ❌ | Minimum signal score (0-100) |
-
-### Response
-
-```json 201
-{
-  "id": 1,
-  "url": "https://your-app.com/webhook/polychads",
-  "categories": "crypto,world",
-  "min_signal": 40,
-  "created_at": "2026-02-27T12:00:00Z"
-}
-```
-
-## List Webhooks
+## List
 
 ```bash
 curl -H "Authorization: Bearer YOUR_KEY" \
   https://polychadsbot.xyz/api/v1/webhooks
 ```
 
-## Delete a Webhook
+## Delete
 
 ```bash
-curl -X DELETE \
-  -H "Authorization: Bearer YOUR_KEY" \
+curl -X DELETE -H "Authorization: Bearer YOUR_KEY" \
   https://polychadsbot.xyz/api/v1/webhooks/1
 ```
 
-## Webhook Payload
+## Payload
 
-Your endpoint receives a `POST` with the full [Alert object](/reference/alert-object) as the JSON body:
+Your endpoint receives the full [Alert object](/reference/alert-object) as JSON:
 
 ```json
 {
@@ -81,6 +64,4 @@ Your endpoint receives a `POST` with the full [Alert object](/reference/alert-ob
 }
 ```
 
-<Tip>
-Respond with a `200` status code within 5 seconds to acknowledge receipt. Failed deliveries are not retried.
-</Tip>
+Respond with `200` within 5 seconds. Failed deliveries are not retried.

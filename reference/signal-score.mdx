@@ -1,50 +1,34 @@
 ---
 title: Signal Score
-description: How alert quality is scored for insider likelihood
+description: What the signal score means
 ---
 
-Every alert is scored **0-100** based on multiple factors. Higher scores indicate stronger insider signals.
+Every alert gets a score from 0 to 100. Higher = more likely to be insider activity.
 
-## Score Ranges
+## Ranges
 
-| Range | Level | Meaning |
-|-------|-------|---------|
-| **80-100** | 🔥 Very High | Likely insider — fresh wallet, precision timing, large size |
-| **60-79** | ⚠️ Strong | Clear accumulation pattern or notable fresh entry |
-| **40-59** | 📊 Moderate | Interesting activity, could be experienced traders |
-| **0-39** | ℹ️ Low | Informational — large trades from known wallets |
+| Score | Level | What it means |
+|-------|-------|---------------|
+| **80–100** | 🔥 Very High | Fresh wallet, big size, precise timing. Likely insider. |
+| **60–79** | ⚠️ Strong | Clear accumulation or notable fresh entry. Worth watching. |
+| **40–59** | 📊 Moderate | Interesting but could be a savvy trader. |
+| **0–39** | ℹ️ Low | Large trade from a known wallet. Informational. |
 
-## Scoring Factors
+## What goes into the score
 
-The signal score is calculated from:
+| Factor | Impact |
+|--------|--------|
+| **Wallet age** | Newer = higher. Wallets created days before a big bet are suspicious. |
+| **Trade history** | Fewer past trades = higher. One-market wallets stand out. |
+| **Position size** | Bigger USDC = higher. Small probes score lower. |
+| **Entry timing** | Buying at extreme odds right before a move scores high. |
 
-<CardGroup cols={2}>
-  <Card title="Wallet Age" icon="clock">
-    Newer wallets score higher. Fresh wallets created within days of trading are the strongest signal.
-  </Card>
-  <Card title="Trade History" icon="chart-line">
-    Fewer previous trades = higher score. One-market wallets are suspicious.
-  </Card>
-  <Card title="Position Size" icon="dollar-sign">
-    Larger USDC positions increase the score. Small "test" trades score lower.
-  </Card>
-  <Card title="Price Timing" icon="crosshairs">
-    Buying at extreme odds (very low or very high) when the market later moves significantly.
-  </Card>
-</CardGroup>
-
-## Usage Tips
-
-<Tip>
-**For trading signals**, filter for `min_signal=60` to focus on high-confidence alerts.
-
-**For research**, include all scores to see the full picture of market activity.
-</Tip>
-
-### Filter by Signal in API
+## Filtering by score
 
 ```bash
-# Only high-signal alerts
+# Only high-confidence alerts
 curl -H "Authorization: Bearer YOUR_KEY" \
   "https://polychadsbot.xyz/api/v1/alerts?min_signal=70"
 ```
+
+For trading, `min_signal=60` is a good starting point. For research, include everything.

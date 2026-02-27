@@ -1,25 +1,25 @@
 ---
 title: Get Alerts
 api: GET /alerts
-description: Paginated alert history with powerful filtering
+description: Paginated alert history with filters
 ---
 
-## Parameters
+Search and filter the full alert history.
 
 <ParamField query="page" type="integer" default="1">
-  Page number for pagination.
+  Page number.
 </ParamField>
 
 <ParamField query="page_size" type="integer" default="20">
-  Results per page. Maximum depends on your tier (Free: 20, Pro: 50, Enterprise: 100).
+  Results per page. Max depends on tier (Free: 20, Pro: 50, Enterprise: 100).
 </ParamField>
 
 <ParamField query="category" type="string">
-  Filter by market category. Options: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
+  Filter by category: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
 </ParamField>
 
 <ParamField query="side" type="string">
-  Filter by trade direction. Options: `BUY`, `SELL`.
+  `BUY` or `SELL`.
 </ParamField>
 
 <ParamField query="min_usdc" type="float">
@@ -27,35 +27,26 @@ description: Paginated alert history with powerful filtering
 </ParamField>
 
 <ParamField query="min_signal" type="integer">
-  Minimum signal score (0–100). Only return alerts above this threshold.
+  Minimum signal score (0–100).
 </ParamField>
-
-## Response
-
-Returns a paginated object containing an array of [Alert objects](/reference/alert-object).
 
 <RequestExample>
 
 ```bash cURL
 curl -H "Authorization: Bearer YOUR_KEY" \
-  "https://polychadsbot.xyz/api/v1/alerts?category=crypto&side=BUY&min_signal=60&page=1"
+  "https://polychadsbot.xyz/api/v1/alerts?category=crypto&min_signal=60&page=1"
 ```
 
 ```python Python
 import requests
 
-resp = requests.get(
+r = requests.get(
     "https://polychadsbot.xyz/api/v1/alerts",
     headers={"Authorization": "Bearer YOUR_KEY"},
-    params={
-        "category": "crypto",
-        "side": "BUY",
-        "min_signal": 60,
-        "page": 1
-    }
+    params={"category": "crypto", "min_signal": 60}
 )
-data = resp.json()
-print(f"Total: {data['total']}, Page: {data['page']}")
+data = r.json()
+print(f"{data['total']} total alerts, showing page {data['page']}")
 ```
 
 </RequestExample>
@@ -69,7 +60,7 @@ print(f"Total: {data['total']}, Page: {data['page']}")
       "id": 2218,
       "alert_type": "fresh",
       "wallet_address": "0xcd5D...30D9",
-      "event_title": "Opinion FDV above $500M one day after launch?",
+      "event_title": "Opinion FDV above $500M?",
       "side": "BUY",
       "outcome": "Yes",
       "entry_price": 0.49,

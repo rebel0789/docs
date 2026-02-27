@@ -1,56 +1,45 @@
 ---
-title: Introduction
-description: Real-time Polymarket insider trading alerts delivered to your application
+title: Polychads API
+description: Polymarket insider alert intelligence — delivered via API
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Polychads Hero"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Polychads Hero"
-/>
+## What we do
 
-## What is Polychads?
+We watch every trade on [Polymarket](https://polymarket.com) and flag the suspicious ones. Fresh wallets dropping $5K on a single outcome. Wallets accumulating positions across multiple buys. Clusters of new wallets all betting the same way within minutes.
 
-Polychads is an insider trading detection system for [Polymarket](https://polymarket.com). We monitor on-chain activity and detect suspicious patterns — **fresh wallets**, **accumulators**, and **coordinated clusters** — and deliver alerts in real-time.
+When we spot it, you get an alert — with the wallet, the market, the size, the price, and a signal score telling you how likely it is to be insider activity.
 
 <CardGroup cols={2}>
-  <Card title="Real-Time Alerts" icon="bolt">
-    Sub-second delivery via WebSocket. Know when insiders move before anyone else.
+  <Card title="Real-Time Delivery" icon="bolt">
+    Alerts hit your WebSocket the moment we detect them. No polling, no delay.
   </Card>
   <Card title="Signal Scoring" icon="crosshairs">
-    Every alert scored 0-100 for insider likelihood using wallet age, trade size, and timing analysis.
+    Every alert gets a 0-100 score based on wallet age, trade size, and timing patterns.
   </Card>
-  <Card title="Rich Data" icon="chart-bar">
-    Wallet history, accumulation patterns, entry prices, market context, and resolution tracking.
+  <Card title="Full Context" icon="chart-bar">
+    Wallet history, accumulation patterns, entry prices, market odds — everything you need to act.
   </Card>
-  <Card title="Easy Integration" icon="plug">
-    REST API, WebSocket, and Webhooks. JSON everywhere. Any language, any framework.
+  <Card title="Simple Integration" icon="plug">
+    REST for historical data, WebSocket for live. JSON in, JSON out. Works with anything.
   </Card>
 </CardGroup>
 
 ## Base URL
 
-All API requests use this base URL:
-
 ```
 https://polychadsbot.xyz/api/v1
 ```
 
-## Quick Links
+## Where to go next
 
 <CardGroup cols={3}>
   <Card title="Quick Start" icon="rocket" href="/quickstart">
-    Get your first alert in 30 seconds
+    First alert in 30 seconds
   </Card>
   <Card title="API Reference" icon="rectangle-terminal" href="/api-reference/overview">
-    Full REST API documentation
+    Every endpoint documented
   </Card>
   <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
-    Real-time streaming guide
+    Live streaming setup
   </Card>
 </CardGroup>

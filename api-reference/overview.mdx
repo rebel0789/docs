@@ -1,6 +1,6 @@
 ---
 title: API Overview
-description: REST API endpoints for accessing Polychads alert data
+description: All available REST endpoints
 ---
 
 ## Base URL
@@ -9,28 +9,26 @@ description: REST API endpoints for accessing Polychads alert data
 https://polychadsbot.xyz/api/v1
 ```
 
-## Authentication
+All requests require a Bearer token. See [Authentication](/authentication).
 
-All endpoints require a Bearer token in the `Authorization` header. See [Authentication](/authentication) for details.
-
-## Available Endpoints
+## Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/alerts/latest` | Get the most recent alerts |
-| `GET` | `/alerts` | Paginated alert history with filters |
-| `GET` | `/alerts/:id` | Get a single alert by ID |
-| `GET` | `/stats` | Aggregate statistics |
-| `GET` | `/me` | Your API key info & usage |
+| `GET` | `/alerts/latest` | Most recent alerts |
+| `GET` | `/alerts` | Paginated history with filters |
+| `GET` | `/alerts/:id` | Single alert by ID |
+| `GET` | `/stats` | System-wide stats |
+| `GET` | `/me` | Your key info and usage |
+| `POST` | `/webhooks` | Register a webhook (Enterprise) |
 | `GET` | `/webhooks` | List your webhooks (Enterprise) |
-| `POST` | `/webhooks` | Create a webhook (Enterprise) |
-| `DELETE` | `/webhooks/:id` | Delete a webhook (Enterprise) |
+| `DELETE` | `/webhooks/:id` | Remove a webhook (Enterprise) |
 
-## Response Format
+## Responses
 
-All responses are JSON. Successful responses return `200` status codes. Errors return appropriate HTTP status codes with a `detail` field:
+Everything is JSON. Success returns `200`. Errors return the appropriate status code with a `detail` field:
 
-```json Error Response
+```json
 {
   "detail": "Rate limit exceeded. pro tier: 300 req/min."
 }
@@ -38,7 +36,7 @@ All responses are JSON. Successful responses return `200` status codes. Errors r
 
 ## Pagination
 
-The `/alerts` endpoint returns paginated results:
+`/alerts` uses page-based pagination. Max `page_size` depends on your tier.
 
 ```json
 {
@@ -49,8 +47,6 @@ The `/alerts` endpoint returns paginated results:
   "has_more": true
 }
 ```
-
-Maximum `page_size` depends on your tier:
 
 | Tier | Max page_size |
 |------|---------------|

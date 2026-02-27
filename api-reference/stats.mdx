@@ -1,10 +1,8 @@
 ---
 title: Get Stats
 api: GET /stats
-description: Aggregate statistics for the alert system
+description: System-wide alert statistics
 ---
-
-## Response
 
 <RequestExample>
 
@@ -31,14 +29,12 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 
 </ResponseExample>
 
-## Fields
-
 | Field | Type | Description |
 |-------|------|-------------|
-| `total_alerts` | int | Total alerts since tracking began |
-| `alerts_today` | int | Alerts generated today (UTC) |
-| `avg_signal_today` | float | Average signal score of today's alerts |
-| `clusters_today` | int | Coordinated cluster alerts today |
-| `win_rate` | float | Win rate of resolved alerts (0-100) |
-| `total_resolved` | int | Total markets that have resolved |
-| `total_won` | int | Total trades that were correct |
+| `total_alerts` | int | All-time alert count |
+| `alerts_today` | int | Today's alerts (UTC) |
+| `avg_signal_today` | float | Mean signal score today |
+| `clusters_today` | int | Cluster alerts today |
+| `win_rate` | float | % of resolved alerts that won |
+| `total_resolved` | int | Markets that resolved |
+| `total_won` | int | Trades that hit |

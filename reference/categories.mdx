@@ -1,25 +1,23 @@
 ---
 title: Categories
-description: Alert categorization by market type
+description: How alerts are categorized
 ---
 
-Alerts are automatically categorized based on the Polymarket event they're associated with.
+Alerts are auto-categorized based on the market they're trading in.
 
-## Available Categories
+| Category | Examples |
+|----------|----------|
+| `crypto` | Token FDV, blockchain events, DeFi |
+| `world` | Geopolitics, conflicts, international events |
+| `politics` | Elections, policy, nominations |
+| `pop_culture` | Celebrities, entertainment, media |
+| `tech` | AI, Apple, Tesla, SpaceX |
+| `finance` | Stocks, rates, S&P 500 |
+| `other` | Everything else |
 
-| Category | Emoji | Count | Examples |
-|----------|-------|-------|----------|
-| `crypto` | 🪙 | 581 | Token FDV bets, blockchain events, DeFi markets |
-| `world` | 🌍 | 963 | Geopolitics, conflicts, international events |
-| `politics` | 🏛️ | 370 | Elections, nominations, policy decisions |
-| `pop_culture` | 🎬 | 58 | Celebrities, media, entertainment |
-| `tech` | 💻 | 18 | AI, Apple, Tesla, SpaceX |
-| `finance` | 💰 | 12 | Stocks, S&P 500, rate decisions |
-| `other` | 📋 | 224 | Events that don't fit other categories |
+## Filtering
 
-## Filtering by Category
-
-### REST API
+### REST
 
 ```bash
 curl -H "Authorization: Bearer YOUR_KEY" \
@@ -28,15 +26,13 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 
 ### Webhooks
 
-When creating a webhook, specify categories as a comma-separated string:
+Pass categories as a comma-separated string when creating a webhook:
 
-```bash
-curl -X POST -H "Authorization: Bearer YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://...", "categories": "crypto,politics"}' \
-  https://polychadsbot.xyz/api/v1/webhooks
+```json
+{
+  "url": "https://your-app.com/hook",
+  "categories": "crypto,politics"
+}
 ```
 
-<Note>
-Categories are assigned automatically using keyword analysis on the event title and slug. New alerts are categorized in real-time.
-</Note>
+Categories are assigned automatically by keyword analysis on the market title. Happens in real-time for new alerts.

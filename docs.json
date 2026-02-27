@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Polychads API",
+  "name": "Polychads",
   "colors": {
     "primary": "#8b5cf6",
     "light": "#a78bfa",
@@ -71,14 +71,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Dashboard",
-          "href": "https://polychadsbot.xyz",
-          "icon": "chart-mixed"
+          "anchor": "Alerts Channel",
+          "href": "https://t.me/polychadsalert",
+          "icon": "paper-plane"
         },
         {
-          "anchor": "Swagger",
-          "href": "https://polychadsbot.xyz/docs",
-          "icon": "rectangle-terminal"
+          "anchor": "Website",
+          "href": "https://polychads.xyz",
+          "icon": "globe"
         }
       ]
     }
@@ -90,14 +90,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Dashboard",
-        "href": "https://polychadsbot.xyz"
+        "label": "polychads.xyz",
+        "href": "https://polychads.xyz"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://t.me/polychads"
+      "href": "https://t.me/alrerat"
     }
   },
   "contextual": {
@@ -111,7 +111,8 @@
   },
   "footer": {
     "socials": {
-      "telegram": "https://t.me/polychads"
+      "x": "https://x.com/polychadsbot",
+      "telegram": "https://t.me/polychadsalert"
     }
   }
 }

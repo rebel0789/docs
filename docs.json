@@ -71,14 +71,24 @@
     "global": {
       "anchors": [
         {
+          "anchor": "Website",
+          "href": "https://polychads.xyz",
+          "icon": "globe"
+        },
+        {
           "anchor": "Alerts Channel",
           "href": "https://t.me/polychadsalert",
           "icon": "paper-plane"
         },
         {
-          "anchor": "Website",
-          "href": "https://polychads.xyz",
-          "icon": "globe"
+          "anchor": "Telegram Bot",
+          "href": "https://t.me/Polychadsbot",
+          "icon": "robot"
+        },
+        {
+          "anchor": "Twitter / X",
+          "href": "https://x.com/polychadsbot",
+          "icon": "x-twitter"
         }
       ]
     }
@@ -109,10 +119,12 @@
       "cursor"
     ]
   },
+  "openapi": "openapi.yaml",
   "footer": {
     "socials": {
       "x": "https://x.com/polychadsbot",
-      "telegram": "https://t.me/polychadsalert"
+      "telegram": "https://t.me/polychadsalert",
+      "website": "https://polychads.xyz"
     }
   }
 }

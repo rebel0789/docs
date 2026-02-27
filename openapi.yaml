@@ -1,0 +1,242 @@
+openapi: 3.0.3
+info:
+  title: Polychads Alerts API
+  version: "1.0"
+  description: Real-time Polymarket insider trading alerts
+servers:
+  - url: https://polychadsbot.xyz/api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: "Your API key — get one from @alrerat on Telegram"
+  schemas:
+    Alert:
+      type: object
+      properties:
+        id:
+          type: integer
+        alert_type:
+          type: string
+          enum: [fresh, fresh_accumulator, cluster]
+        wallet_address:
+          type: string
+        event_title:
+          type: string
+        event_slug:
+          type: string
+        market_id:
+          type: string
+        side:
+          type: string
+          enum: [BUY, SELL]
+        outcome:
+          type: string
+        entry_price:
+          type: number
+        usdc_value:
+          type: number
+        signal_score:
+          type: integer
+        trade_count:
+          type: integer
+        category:
+          type: string
+        created_at:
+          type: string
+        resolved:
+          type: boolean
+        won:
+          type: boolean
+          nullable: true
+        profit_usdc:
+          type: number
+          nullable: true
+        details:
+          type: object
+          nullable: true
+    PaginatedAlerts:
+      type: object
+      properties:
+        alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alert'
+        total:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+        has_more:
+          type: boolean
+    Stats:
+      type: object
+      properties:
+        total_alerts:
+          type: integer
+        alerts_today:
+          type: integer
+        avg_signal_today:
+          type: number
+        clusters_today:
+          type: integer
+        win_rate:
+          type: number
+        total_resolved:
+          type: integer
+        total_won:
+          type: integer
+    KeyInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        tier:
+          type: string
+        rate_limit:
+          type: string
+        websocket:
+          type: boolean
+        webhooks:
+          type: boolean
+        realtime:
+          type: boolean
+        max_page_size:
+          type: integer
+        requests_today:
+          type: integer
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+paths:
+  /alerts/latest:
+    get:
+      operationId: getLatestAlerts
+      summary: Get Latest Alerts
+      description: Returns the most recent insider alerts, sorted newest first.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+          description: Number of alerts to return
+      responses:
+        "200":
+          description: Array of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+        "401":
+          description: Missing API key
+        "429":
+          description: Rate limited
+
+  /alerts:
+    get:
+      operationId: getAlerts
+      summary: Get Alerts
+      description: Paginated alert history with filtering.
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: Results per page
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [crypto, politics, world, tech, finance, pop_culture, other]
+          description: Filter by category
+        - name: side
+          in: query
+          schema:
+            type: string
+            enum: [BUY, SELL]
+          description: Filter by trade direction
+        - name: min_usdc
+          in: query
+          schema:
+            type: number
+          description: Minimum trade size in USDC
+        - name: min_signal
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+          description: Minimum signal score
+      responses:
+        "200":
+          description: Paginated alerts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAlerts'
+
+  /alerts/{id}:
+    get:
+      operationId: getAlertById
+      summary: Get Alert by ID
+      description: Fetch a single alert by its numeric ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Alert ID
+      responses:
+        "200":
+          description: Single alert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        "404":
+          description: Alert not found
+
+  /stats:
+    get:
+      operationId: getStats
+      summary: Get Stats
+      description: System-wide alert statistics.
+      responses:
+        "200":
+          description: Stats object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+
+  /me:
+    get:
+      operationId: getMe
+      summary: Get My Info
+      description: Your API key details and usage.
+      responses:
+        "200":
+          description: Key info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyInfo'

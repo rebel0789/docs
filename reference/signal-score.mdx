@@ -1,0 +1,50 @@
+---
+title: Signal Score
+description: How alert quality is scored for insider likelihood
+---
+
+Every alert is scored **0-100** based on multiple factors. Higher scores indicate stronger insider signals.
+
+## Score Ranges
+
+| Range | Level | Meaning |
+|-------|-------|---------|
+| **80-100** | 🔥 Very High | Likely insider — fresh wallet, precision timing, large size |
+| **60-79** | ⚠️ Strong | Clear accumulation pattern or notable fresh entry |
+| **40-59** | 📊 Moderate | Interesting activity, could be experienced traders |
+| **0-39** | ℹ️ Low | Informational — large trades from known wallets |
+
+## Scoring Factors
+
+The signal score is calculated from:
+
+<CardGroup cols={2}>
+  <Card title="Wallet Age" icon="clock">
+    Newer wallets score higher. Fresh wallets created within days of trading are the strongest signal.
+  </Card>
+  <Card title="Trade History" icon="chart-line">
+    Fewer previous trades = higher score. One-market wallets are suspicious.
+  </Card>
+  <Card title="Position Size" icon="dollar-sign">
+    Larger USDC positions increase the score. Small "test" trades score lower.
+  </Card>
+  <Card title="Price Timing" icon="crosshairs">
+    Buying at extreme odds (very low or very high) when the market later moves significantly.
+  </Card>
+</CardGroup>
+
+## Usage Tips
+
+<Tip>
+**For trading signals**, filter for `min_signal=60` to focus on high-confidence alerts.
+
+**For research**, include all scores to see the full picture of market activity.
+</Tip>
+
+### Filter by Signal in API
+
+```bash
+# Only high-signal alerts
+curl -H "Authorization: Bearer YOUR_KEY" \
+  "https://polychadsbot.xyz/api/v1/alerts?min_signal=70"
+```

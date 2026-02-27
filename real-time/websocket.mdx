@@ -1,0 +1,148 @@
+---
+title: WebSocket Stream
+description: Real-time alert delivery with zero latency
+---
+
+<Info>
+**WebSocket requires Pro or Enterprise tier.** Free tier users can poll `/alerts/latest` instead.
+</Info>
+
+## Endpoint
+
+```
+wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY
+```
+
+## Quick Example
+
+<CodeGroup>
+
+```javascript JavaScript
+const ws = new WebSocket(
+  "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
+);
+
+ws.onmessage = (event) => {
+  const msg = JSON.parse(event.data);
+
+  if (msg.type === "connected") {
+    console.log("✅ Connected to alert stream");
+  }
+
+  if (msg.type === "alert") {
+    const a = msg.data;
+    console.log(`🔔 ${a.side} ${a.outcome} @ ${a.entry_price}`);
+    console.log(`   $${a.usdc_value} | Signal: ${a.signal_score}`);
+    console.log(`   ${a.event_title}`);
+  }
+};
+
+// Keep-alive heartbeat (required every 30s)
+setInterval(() => {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send("ping");
+  }
+}, 25000);
+```
+
+```python Python
+import asyncio
+import json
+import websockets
+
+async def listen():
+    uri = "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
+    async with websockets.connect(uri) as ws:
+        async for message in ws:
+            msg = json.loads(message)
+            if msg["type"] == "alert":
+                a = msg["data"]
+                print(f"🔔 {a['side']} {a['outcome']} @ {a['entry_price']}")
+                print(f"   ${a['usdc_value']} | Signal: {a['signal_score']}")
+                print(f"   {a['event_title']}")
+
+asyncio.run(listen())
+```
+
+</CodeGroup>
+
+## Message Types
+
+### `connected`
+
+Sent once when the connection is established.
+
+```json
+{
+  "type": "connected",
+  "message": "Connected to Polychads alert stream",
+  "tier": "pro"
+}
+```
+
+### `alert`
+
+Sent whenever a new insider alert is detected. The `data` field contains the full [Alert object](/reference/alert-object).
+
+```json
+{
+  "type": "alert",
+  "data": {
+    "id": 2221,
+    "alert_type": "fresh",
+    "side": "BUY",
+    "outcome": "Yes",
+    "entry_price": 0.42,
+    "usdc_value": 2100.0,
+    "signal_score": 72,
+    "event_title": "Will ETH hit $5000 by April?",
+    "category": "crypto",
+    "created_at": "2026-02-27 12:00:15"
+  }
+}
+```
+
+### `pong`
+
+Response to your `ping` heartbeat messages.
+
+```json
+{
+  "type": "pong"
+}
+```
+
+## Heartbeat
+
+You **must** send a `ping` message at least every 30 seconds to keep the connection alive. The server responds with a `pong`.
+
+```javascript
+setInterval(() => {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send("ping");
+  }
+}, 25000);
+```
+
+## Reconnection
+
+If the connection drops, implement exponential backoff:
+
+```javascript
+let reconnectDelay = 1000;
+
+ws.onclose = () => {
+  setTimeout(() => {
+    reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+    connect(); // your connect function
+  }, reconnectDelay);
+};
+
+ws.onopen = () => {
+  reconnectDelay = 1000; // reset on success
+};
+```
+
+<Warning>
+The WebSocket endpoint uses `api_key` as a query parameter (not the `Authorization` header). Make sure to URL-encode your key if it contains special characters.
+</Warning>

@@ -1,0 +1,56 @@
+---
+title: Introduction
+description: Real-time Polymarket insider trading alerts delivered to your application
+---
+
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.svg"
+  alt="Polychads Hero"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.svg"
+  alt="Polychads Hero"
+/>
+
+## What is Polychads?
+
+Polychads is an insider trading detection system for [Polymarket](https://polymarket.com). We monitor on-chain activity and detect suspicious patterns — **fresh wallets**, **accumulators**, and **coordinated clusters** — and deliver alerts in real-time.
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Alerts" icon="bolt">
+    Sub-second delivery via WebSocket. Know when insiders move before anyone else.
+  </Card>
+  <Card title="Signal Scoring" icon="crosshairs">
+    Every alert scored 0-100 for insider likelihood using wallet age, trade size, and timing analysis.
+  </Card>
+  <Card title="Rich Data" icon="chart-bar">
+    Wallet history, accumulation patterns, entry prices, market context, and resolution tracking.
+  </Card>
+  <Card title="Easy Integration" icon="plug">
+    REST API, WebSocket, and Webhooks. JSON everywhere. Any language, any framework.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+All API requests use this base URL:
+
+```
+https://polychadsbot.xyz/api/v1
+```
+
+## Quick Links
+
+<CardGroup cols={3}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get your first alert in 30 seconds
+  </Card>
+  <Card title="API Reference" icon="rectangle-terminal" href="/api-reference/overview">
+    Full REST API documentation
+  </Card>
+  <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
+    Real-time streaming guide
+  </Card>
+</CardGroup>

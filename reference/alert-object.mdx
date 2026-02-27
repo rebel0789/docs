@@ -1,0 +1,91 @@
+---
+title: Alert Object
+description: Complete schema of an alert returned by all endpoints
+---
+
+## Schema
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | int | Unique alert ID |
+| `alert_type` | string | `fresh`, `fresh_accumulator`, or `cluster` |
+| `wallet_address` | string | Ethereum address of the trader |
+| `market_id` | string | Polymarket contract ID |
+| `event_slug` | string | URL-friendly market slug |
+| `event_title` | string | Market question text |
+| `side` | string | `BUY` or `SELL` |
+| `outcome` | string | Outcome traded: `Yes`, `No`, or named |
+| `entry_price` | float | Price paid (0.0 – 1.0) |
+| `usdc_value` | float | Total trade size in USDC |
+| `signal_score` | int | Insider signal strength (0-100) |
+| `trade_count` | int | Wallet's total markets traded |
+| `category` | string | Market category (see [Categories](/reference/categories)) |
+| `created_at` | string | UTC timestamp |
+| `resolved` | bool | Whether the market has resolved |
+| `won` | bool | Whether the trade was correct |
+| `profit_usdc` | float | P&L in USDC (after resolution) |
+| `details` | object? | Extended wallet & accumulation data |
+
+## Alert Types
+
+<AccordionGroup>
+  <Accordion title="fresh — New wallet alert">
+    A brand-new or very low-activity wallet making a significant trade. These are the highest-signal alerts because insiders often create fresh wallets to avoid detection.
+  </Accordion>
+
+  <Accordion title="fresh_accumulator — Repeat buyer">
+    A fresh wallet that has made **multiple buys** on the same market — showing conviction. The `details` object includes accumulation data:
+
+    ```json
+    {
+      "is_accumulating": true,
+      "market_buy_count": 4,
+      "market_total_bought": 6200.0,
+      "market_avg_price": 0.31
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="cluster — Coordinated group">
+    Multiple wallets buying the same outcome within a short timeframe. Indicates possible coordination. The `details` includes cluster info:
+
+    ```json
+    {
+      "cluster_size": 5,
+      "cluster_total_usdc": 12500.0,
+      "cluster_wallets": ["0x1...", "0x2...", "0x3...", "0x4...", "0x5..."]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Full Example
+
+```json
+{
+  "id": 2220,
+  "alert_type": "fresh_accumulator",
+  "wallet_address": "0x9B3b4e3bD0e9c72FF8b1A3cE7dA1f6BC3",
+  "market_id": "0x1234...abcd",
+  "event_slug": "us-strikes-iran-by-march-31-2026",
+  "event_title": "US strikes Iran by March 31, 2026?",
+  "side": "BUY",
+  "outcome": "Yes",
+  "entry_price": 0.19,
+  "usdc_value": 1900.0,
+  "signal_score": 80,
+  "trade_count": 1,
+  "category": "world",
+  "created_at": "2026-02-27 11:35:26",
+  "resolved": false,
+  "won": null,
+  "profit_usdc": null,
+  "details": {
+    "wallet_age_days": 2,
+    "is_accumulating": true,
+    "market_buy_count": 3,
+    "market_total_bought": 4500.0,
+    "market_avg_price": 0.22
+  }
+}
+```

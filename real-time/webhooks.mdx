@@ -1,0 +1,86 @@
+---
+title: Webhooks
+description: Receive alerts via HTTP POST to your server
+---
+
+<Info>
+**Webhooks require Enterprise tier.** [Contact us](https://t.me/polychads) to upgrade.
+</Info>
+
+## How It Works
+
+1. Register a webhook URL with optional filters
+2. When a matching alert fires, we send a `POST` request to your URL
+3. Your server responds with `200` to acknowledge receipt
+
+## Create a Webhook
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-app.com/webhook/polychads",
+    "categories": "crypto,world",
+    "min_signal": 40
+  }' \
+  https://polychadsbot.xyz/api/v1/webhooks
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | string | ✅ | Your HTTPS endpoint URL |
+| `categories` | string | ❌ | Comma-separated category filter |
+| `min_signal` | integer | ❌ | Minimum signal score (0-100) |
+
+### Response
+
+```json 201
+{
+  "id": 1,
+  "url": "https://your-app.com/webhook/polychads",
+  "categories": "crypto,world",
+  "min_signal": 40,
+  "created_at": "2026-02-27T12:00:00Z"
+}
+```
+
+## List Webhooks
+
+```bash
+curl -H "Authorization: Bearer YOUR_KEY" \
+  https://polychadsbot.xyz/api/v1/webhooks
+```
+
+## Delete a Webhook
+
+```bash
+curl -X DELETE \
+  -H "Authorization: Bearer YOUR_KEY" \
+  https://polychadsbot.xyz/api/v1/webhooks/1
+```
+
+## Webhook Payload
+
+Your endpoint receives a `POST` with the full [Alert object](/reference/alert-object) as the JSON body:
+
+```json
+{
+  "id": 2221,
+  "alert_type": "fresh",
+  "side": "BUY",
+  "outcome": "Yes",
+  "entry_price": 0.42,
+  "usdc_value": 2100.0,
+  "signal_score": 72,
+  "event_title": "Will ETH hit $5000 by April?",
+  "category": "crypto",
+  "created_at": "2026-02-27 12:00:15"
+}
+```
+
+<Tip>
+Respond with a `200` status code within 5 seconds to acknowledge receipt. Failed deliveries are not retried.
+</Tip>

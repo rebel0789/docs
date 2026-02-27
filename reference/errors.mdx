@@ -1,0 +1,67 @@
+---
+title: Error Codes
+description: HTTP status codes and error response format
+---
+
+## Error Response Format
+
+All errors return a JSON object with a `detail` field:
+
+```json
+{
+  "detail": "Rate limit exceeded. pro tier: 300 req/min."
+}
+```
+
+## Status Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `200` | OK | Request successful |
+| `201` | Created | Resource created (webhooks) |
+| `401` | Unauthorized | Missing `Authorization` header |
+| `403` | Forbidden | Invalid API key or insufficient tier for this feature |
+| `404` | Not Found | Alert or resource doesn't exist |
+| `429` | Rate Limited | Too many requests — see `Retry-After` header |
+| `500` | Server Error | Internal error — contact support |
+
+## Handling Errors
+
+<CodeGroup>
+
+```python Python
+import requests
+
+resp = requests.get(
+    "https://polychadsbot.xyz/api/v1/alerts",
+    headers={"Authorization": "Bearer YOUR_KEY"}
+)
+
+if resp.status_code == 200:
+    alerts = resp.json()
+elif resp.status_code == 429:
+    retry_after = resp.headers.get("Retry-After", 60)
+    print(f"Rate limited — retry in {retry_after}s")
+elif resp.status_code == 403:
+    print("Access denied — check your tier")
+else:
+    print(f"Error {resp.status_code}: {resp.json()['detail']}")
+```
+
+```javascript JavaScript
+const resp = await fetch("https://polychadsbot.xyz/api/v1/alerts", {
+  headers: { Authorization: `Bearer ${apiKey}` }
+});
+
+if (!resp.ok) {
+  if (resp.status === 429) {
+    const retryAfter = resp.headers.get("Retry-After") || 60;
+    console.log(`Rate limited — retry in ${retryAfter}s`);
+  } else {
+    const error = await resp.json();
+    console.error(`Error ${resp.status}: ${error.detail}`);
+  }
+}
+```
+
+</CodeGroup>

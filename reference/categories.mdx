@@ -1,0 +1,42 @@
+---
+title: Categories
+description: Alert categorization by market type
+---
+
+Alerts are automatically categorized based on the Polymarket event they're associated with.
+
+## Available Categories
+
+| Category | Emoji | Count | Examples |
+|----------|-------|-------|----------|
+| `crypto` | 🪙 | 581 | Token FDV bets, blockchain events, DeFi markets |
+| `world` | 🌍 | 963 | Geopolitics, conflicts, international events |
+| `politics` | 🏛️ | 370 | Elections, nominations, policy decisions |
+| `pop_culture` | 🎬 | 58 | Celebrities, media, entertainment |
+| `tech` | 💻 | 18 | AI, Apple, Tesla, SpaceX |
+| `finance` | 💰 | 12 | Stocks, S&P 500, rate decisions |
+| `other` | 📋 | 224 | Events that don't fit other categories |
+
+## Filtering by Category
+
+### REST API
+
+```bash
+curl -H "Authorization: Bearer YOUR_KEY" \
+  "https://polychadsbot.xyz/api/v1/alerts?category=crypto"
+```
+
+### Webhooks
+
+When creating a webhook, specify categories as a comma-separated string:
+
+```bash
+curl -X POST -H "Authorization: Bearer YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://...", "categories": "crypto,politics"}' \
+  https://polychadsbot.xyz/api/v1/webhooks
+```
+
+<Note>
+Categories are assigned automatically using keyword analysis on the event title and slug. New alerts are categorized in real-time.
+</Note>

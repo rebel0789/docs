@@ -1,0 +1,68 @@
+---
+title: Get Alert by ID
+api: GET /alerts/{id}
+description: Retrieve a single alert by its numeric ID
+---
+
+## Parameters
+
+<ParamField path="id" type="integer" required>
+  The unique alert ID.
+</ParamField>
+
+## Response
+
+Returns a single [Alert object](/reference/alert-object).
+
+<RequestExample>
+
+```bash cURL
+curl -H "Authorization: Bearer YOUR_KEY" \
+  https://polychadsbot.xyz/api/v1/alerts/2220
+```
+
+```python Python
+import requests
+
+resp = requests.get(
+    "https://polychadsbot.xyz/api/v1/alerts/2220",
+    headers={"Authorization": "Bearer YOUR_KEY"}
+)
+alert = resp.json()
+print(f"Signal: {alert['signal_score']}")
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "id": 2220,
+  "alert_type": "fresh_accumulator",
+  "wallet_address": "0x9B3b4e3bD0e9c72FF8b1A3c...",
+  "event_title": "US strikes Iran by March 31, 2026?",
+  "side": "BUY",
+  "outcome": "Yes",
+  "entry_price": 0.19,
+  "usdc_value": 1900.0,
+  "signal_score": 80,
+  "category": "world",
+  "created_at": "2026-02-27 11:35:26",
+  "details": {
+    "wallet_age_days": 2,
+    "is_accumulating": true,
+    "market_buy_count": 3,
+    "market_total_bought": 4500.0,
+    "market_avg_price": 0.22
+  }
+}
+```
+
+```json 404
+{
+  "detail": "Alert 99999 not found"
+}
+```
+
+</ResponseExample>

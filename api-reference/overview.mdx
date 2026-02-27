@@ -1,0 +1,59 @@
+---
+title: API Overview
+description: REST API endpoints for accessing Polychads alert data
+---
+
+## Base URL
+
+```
+https://polychadsbot.xyz/api/v1
+```
+
+## Authentication
+
+All endpoints require a Bearer token in the `Authorization` header. See [Authentication](/authentication) for details.
+
+## Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/alerts/latest` | Get the most recent alerts |
+| `GET` | `/alerts` | Paginated alert history with filters |
+| `GET` | `/alerts/:id` | Get a single alert by ID |
+| `GET` | `/stats` | Aggregate statistics |
+| `GET` | `/me` | Your API key info & usage |
+| `GET` | `/webhooks` | List your webhooks (Enterprise) |
+| `POST` | `/webhooks` | Create a webhook (Enterprise) |
+| `DELETE` | `/webhooks/:id` | Delete a webhook (Enterprise) |
+
+## Response Format
+
+All responses are JSON. Successful responses return `200` status codes. Errors return appropriate HTTP status codes with a `detail` field:
+
+```json Error Response
+{
+  "detail": "Rate limit exceeded. pro tier: 300 req/min."
+}
+```
+
+## Pagination
+
+The `/alerts` endpoint returns paginated results:
+
+```json
+{
+  "alerts": [...],
+  "total": 2226,
+  "page": 1,
+  "page_size": 50,
+  "has_more": true
+}
+```
+
+Maximum `page_size` depends on your tier:
+
+| Tier | Max page_size |
+|------|---------------|
+| Free | 20 |
+| Pro | 50 |
+| Enterprise | 100 |

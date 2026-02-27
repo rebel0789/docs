@@ -1,0 +1,44 @@
+---
+title: Get Stats
+api: GET /stats
+description: Aggregate statistics for the alert system
+---
+
+## Response
+
+<RequestExample>
+
+```bash cURL
+curl -H "Authorization: Bearer YOUR_KEY" \
+  https://polychadsbot.xyz/api/v1/stats
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "total_alerts": 2226,
+  "alerts_today": 183,
+  "avg_signal_today": 59.2,
+  "clusters_today": 0,
+  "win_rate": 0.0,
+  "total_resolved": 0,
+  "total_won": 0
+}
+```
+
+</ResponseExample>
+
+## Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total_alerts` | int | Total alerts since tracking began |
+| `alerts_today` | int | Alerts generated today (UTC) |
+| `avg_signal_today` | float | Average signal score of today's alerts |
+| `clusters_today` | int | Coordinated cluster alerts today |
+| `win_rate` | float | Win rate of resolved alerts (0-100) |
+| `total_resolved` | int | Total markets that have resolved |
+| `total_won` | int | Total trades that were correct |

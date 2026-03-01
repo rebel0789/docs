@@ -1,25 +1,28 @@
 ---
-title: WebSocket
-description: Live alert stream with zero latency
+title: WebSocket Stream
+description: Hook directly into our engine. Zero polling, zero latency.
 ---
 
 <Note>
-WebSocket requires **Pro** or **Enterprise** tier.
+WebSockets are only available on the **Pro** and **Enterprise** tiers. 
+If you connect with a Free tier key, the server will instantly drop your connection. Use [GET /alerts/latest](/api-reference/alerts/get-latest) instead if you're on Free.
 </Note>
 
-## Endpoint
+## The Endpoint
+
+Hook your client into this URL. **Do not** put your API key in the `Authorization` header—WebSocket libraries are notoriously inconsistent with custom headers. Pass it exactly as shown in the query string.
 
 ```
-wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY
+wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY_HERE
 ```
 
-## Example
+## Setup Example
 
 <CodeGroup>
 
-```javascript JavaScript
+```javascript Node / Browser
 const ws = new WebSocket(
-  "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
+  "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY_HERE"
 );
 
 ws.onmessage = (event) => {
@@ -27,50 +30,51 @@ ws.onmessage = (event) => {
 
   switch (msg.type) {
     case "connected":
-      console.log("Connected —", msg.tier, "tier");
+      console.log(`🔌 Wired in! Running on ${msg.tier} tier.`);
       break;
     case "alert":
       const a = msg.data;
-      console.log(`${a.side} ${a.outcome} @ ${a.entry_price}`);
-      console.log(`$${a.usdc_value} | score ${a.signal_score}`);
-      console.log(a.event_title);
+      console.log(`🚨 WHALE ALERT: ${a.side} ${a.outcome} on '${a.event_title}'`);
+      console.log(`Size: $${a.usdc_value} @ ${a.entry_price}¢`);
+      console.log(`Conviction Score: ${a.signal_score}/100`);
       break;
   }
 };
 
-// Required — send ping every 25s to stay connected
+// CRITICAL: Send a ping every 25 seconds to keep the socket alive
 setInterval(() => {
   if (ws.readyState === WebSocket.OPEN) ws.send("ping");
 }, 25000);
 ```
 
-```python Python
+```python Python (websockets)
 import asyncio, json, websockets
 
-async def listen():
-    uri = "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
+async def listen_for_whales():
+    uri = "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY_HERE"
+    
     async with websockets.connect(uri) as ws:
         async for message in ws:
             msg = json.loads(message)
+            
             if msg["type"] == "alert":
                 a = msg["data"]
-                print(f"{a['side']} {a['outcome']} @ {a['entry_price']}")
-                print(f"${a['usdc_value']} | score {a['signal_score']}")
-                print(a["event_title"])
-                print()
+                print(f"🚨 ALERT: {a['side']} {a['outcome']} @ {a['entry_price']}¢")
+                print(f"Size: ${a['usdc_value']} | Score: {a['signal_score']}")
+                print(a["event_title"], "\n")
 
-asyncio.run(listen())
+# Run the event loop
+asyncio.run(listen_for_whales())
 ```
 
 </CodeGroup>
 
-## Messages
+## Payload Specifications
 
 ### `connected`
+Fired exactly once the millisecond your connection is successfully authenticated.
 
-Sent once when you connect.
-
-```json
+```json 
 {
   "type": "connected",
   "message": "Connected to Polychads alert stream",
@@ -79,8 +83,7 @@ Sent once when you connect.
 ```
 
 ### `alert`
-
-New insider alert detected. `data` is the full [Alert object](/reference/alert-object).
+A live insider alert. The `data` property contains the exact [Alert Object](/reference/alert-object) you get from the REST API.
 
 ```json
 {
@@ -100,26 +103,34 @@ New insider alert detected. `data` is the full [Alert object](/reference/alert-o
 ```
 
 ### `pong`
+Sent by the server immediately after you send a `ping`. 
 
-Response to your `ping`. Server closes connections that don't ping within 30 seconds.
+<Warning>
+**Keep-Alives are mandatory.** The server unapologetically drops connections that fail to send a `ping` string within any rolling 30-second window. Set your interval to 20-25 seconds to be safe.
+</Warning>
 
-## Reconnection
+## Handling Disconnects
 
-If you get disconnected, back off exponentially:
+Networks hiccup. Servers redeploy. Your bot should be resilient. Always use exponential backoff when reconnecting so you don't get banned for hammering the auth server if something goes down.
 
-```javascript
-let delay = 1000;
+```javascript Reconnection Logic
+let retryDelay = 1000;
 
 function connect() {
   const ws = new WebSocket("wss://polychadsbot.xyz/ws/alerts?api_key=KEY");
-  ws.onopen = () => { delay = 1000; };
+  
+  ws.onopen = () => { 
+    console.log("Connected");
+    retryDelay = 1000; // Reset backoff on success
+  };
+  
   ws.onclose = () => {
-    setTimeout(connect, delay);
-    delay = Math.min(delay * 2, 30000);
+    console.log(`Disconnected. Retrying in ${retryDelay}ms...:(`);
+    setTimeout(connect, retryDelay);
+    // Exponential backoff, capping at 30 seconds
+    retryDelay = Math.min(retryDelay * 2, 30000); 
   };
 }
-```
 
-<Warning>
-The key goes in the query string (`api_key=`), not the Authorization header. WebSocket headers aren't universally supported.
-</Warning>
+connect();
+```

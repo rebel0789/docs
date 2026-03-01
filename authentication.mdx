@@ -1,74 +1,87 @@
 ---
 title: Authentication
-description: How to get and use your API key
+description: Secure your requests and manage your tier limits.
 ---
 
-Every request needs an API key in the `Authorization` header.
+We keep authentication simple. Every request just needs your API key passed in the `Authorization` header as a Bearer token.
 
 ```
 Authorization: Bearer YOUR_API_KEY
 ```
 
-## Get a key
+## How to get a key
 
-Open our Telegram bot and generate a key instantly:
+We've split our key generation to make sure you get exactly what you need, instantly.
 
-<Card title="@chadsapibot on Telegram" icon="robot" href="https://t.me/chadsapibot">
-  Tap **Get API Key** → join our alerts channel → choose Free or Pro tier → your key is generated instantly.
+### 1. Free & Pro Keys (Automated)
+If you just want to start building, analyzing data, or testing your bots, use our automated Telegram integration.
+
+<Card title="Get a Free or Pro Key" icon="robot" href="https://t.me/chadsapibot">
+  Open **@chadsapibot** → Tap **Get API Key** → Join the channel → Pick your tier. 
+  
+  *Your key is generated and ready to use immediately.*
 </Card>
 
-**Available tiers:**
+### 2. Enterprise Keys (Manual)
+If you're running a production system that requires webhook push delivery, entirely unlimited rate limits, and dedicated support, you need an Enterprise key.
 
-| | Free | Pro (30 days) | Enterprise |
+<Card title="Request Enterprise Access" icon="briefcase" href="https://t.me/alrerat">
+  DM **@alrerat** directly on Telegram. Tell us what you're building, your expected volume, and we'll provision a custom key for your backend.
+</Card>
+
+---
+
+## Compare Tiers
+
+| Feature | Free | Pro (30 Days) | Enterprise |
 |--|------|---------------|------------|
-| Rate limit | 60/min | 300/min | Unlimited |
-| Data delay | 5 min | Real-time | Real-time |
-| WebSocket | — | ✅ | ✅ |
-| Webhooks | — | — | ✅ |
+| **Data Freshness** | 5-minute delay | **Real-time** | **Real-time** |
+| **Pulls per minute** | 60 | 300 | **Unlimited** |
+| **WebSocket Stream** | ❌ | ✅ | ✅ |
+| **Webhook Delivery** | ❌ | ❌ | ✅ |
 
 <Tip>
-Pro keys are free for 30 days. After expiry, they auto-downgrade to Free tier.
-Enterprise keys are available on request — DM **[@alrerat](https://t.me/alrerat)** on Telegram.
+Pro keys are completely free for the first 30 days. When it expires, your key will automatically downgrade to the Free tier, so your integration won't completely break — it'll just get rate-limited and delayed formatting.
 </Tip>
 
-## Try it
+---
+
+## Test Your Key
+
+Want to make sure everything is working? Hit the `/me` endpoint. It'll bounce back your exact tier features and how much of your rate limit you've chewed through today.
 
 <CodeGroup>
 
 ```bash cURL
-curl -H "Authorization: Bearer pc_your_key_here" \
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
   https://polychadsbot.xyz/api/v1/me
 ```
 
 ```python Python
 import requests
 
-r = requests.get(
+response = requests.get(
     "https://polychadsbot.xyz/api/v1/me",
-    headers={"Authorization": "Bearer pc_your_key_here"}
+    headers={"Authorization": "Bearer YOUR_KEY_HERE"}
 )
-print(r.json())
+print(response.json())
 ```
 
 ```javascript JavaScript
-const r = await fetch("https://polychadsbot.xyz/api/v1/me", {
-  headers: { Authorization: `Bearer ${apiKey}` }
+const response = await fetch("https://polychadsbot.xyz/api/v1/me", {
+  headers: { Authorization: "Bearer YOUR_KEY_HERE" }
 });
-const data = await r.json();
+const data = await response.json();
+console.log(data);
 ```
 
 </CodeGroup>
 
-If your key is valid, you'll get back your tier info and usage stats.
+## Security
 
-## Key format
-
-Keys start with `pc_` followed by a random string:
-
-```
-pc_Kr_Ohzog-pwKB64HmOk7uGf-Q86Zde5kpyD1F2IVDzA
-```
+Keys follow this format: `pc_` followed by a high-entropy random string.
+Example: `pc_Kr_Ohzog-pwKB64HmOk7uGf-Q86Zde5kpyD1F2IVDzA`
 
 <Warning>
-Keys can't be recovered after creation. Copy it immediately when generated. Don't commit keys to public repos.
+**Treat your key like a password.** We hash these in our database, meaning if you lose it, we cannot recover it for you. Never commit your key to a public GitHub repository or expose it in client-side frontend code.
 </Warning>

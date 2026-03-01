@@ -1,44 +1,47 @@
 ---
 title: Get Alerts
 openapi: GET /alerts
-description: Paginated alert history with filters
+description: Search, filter, and paginate through the full historical archive of insider alerts.
 ---
 
-Search and filter the full alert history.
+Want to backtest a strategy? Need to find every whale buy on Crypto markets from last week? This is your endpoint. You can filter the entire Polychads database using the parameters below.
 
 <ParamField query="page" type="integer" default="1">
-  Page number.
+  The page number to fetch.
 </ParamField>
 
 <ParamField query="page_size" type="integer" default="20">
-  Results per page. Max depends on tier (Free: 20, Pro: 50, Enterprise: 100).
+  How many results to pack into one page. 
+  *Limits: Free: 20, Pro: 50, Enterprise: 100.*
 </ParamField>
 
 <ParamField query="category" type="string">
-  Filter by category: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
+  Isolate a specific market sector: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
 </ParamField>
 
 <ParamField query="side" type="string">
-  `BUY` or `SELL`.
+  Filter by action: `BUY` or `SELL`.
 </ParamField>
 
 <ParamField query="min_usdc" type="float">
-  Minimum trade size in USDC.
+  Only show trades larger than this USDC amount. Great for filtering out noise.
 </ParamField>
 
 <ParamField query="min_signal" type="integer">
-  Minimum signal score (0–100).
+  Only show alerts with a Signal Score equal to or higher than this (0-100).
 </ParamField>
 
 <ParamField query="q" type="string">
-  Text search — matches against market title, slug, or wallet address.
+  Power search. Matches against the market question, market slug, or exact wallet address.
 </ParamField>
+
+### Try it out
 
 <RequestExample>
 
 ```bash cURL
-curl -H "Authorization: Bearer YOUR_KEY" \
-  "https://polychadsbot.xyz/api/v1/alerts?category=crypto&min_signal=60&page=1"
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
+  "https://polychadsbot.xyz/api/v1/alerts?category=crypto&min_signal=80&min_usdc=5000&page=1"
 ```
 
 ```python Python
@@ -46,37 +49,38 @@ import requests
 
 r = requests.get(
     "https://polychadsbot.xyz/api/v1/alerts",
-    headers={"Authorization": "Bearer YOUR_KEY"},
-    params={"category": "crypto", "min_signal": 60}
+    headers={"Authorization": "Bearer YOUR_KEY_HERE"},
+    params={"category": "crypto", "min_signal": 80, "min_usdc": 5000}
 )
 data = r.json()
-print(f"{data['total']} total alerts, showing page {data['page']}")
+print(f"Found {data['total']} alerts matching your criteria.")
 ```
 
 </RequestExample>
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 {
   "alerts": [
     {
       "id": 2218,
       "alert_type": "fresh",
       "wallet_address": "0xcd5D...30D9",
+      "market_id": "0x4441...890a",
       "event_title": "Opinion FDV above $500M?",
       "side": "BUY",
       "outcome": "Yes",
       "entry_price": 0.49,
-      "usdc_value": 965.0,
-      "signal_score": 65,
+      "usdc_value": 8500.0,
+      "signal_score": 85,
       "category": "crypto",
       "created_at": "2026-02-27 11:10:12"
     }
   ],
-  "total": 581,
+  "total": 142,
   "page": 1,
-  "page_size": 50,
+  "page_size": 20,
   "has_more": true
 }
 ```

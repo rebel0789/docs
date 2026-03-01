@@ -1,37 +1,38 @@
 ---
 title: Get Hot Markets
-description: Markets with the most insider activity right now
+openapi: GET /hot-markets
+description: The absolute hottest markets right now, ranked by insider activity.
 ---
 
-Surface the hottest markets based on alert volume, signal strength, and trade size.
+Where is the smart money flowing? This endpoint aggregates our entire alert feed into three distinct leaderboard lists: Most Alerts, Highest Signal Score, and Biggest Trades. 
 
 <Note>
-No API key required — guest access uses free-tier defaults. Authenticated requests get the same data.
+This endpoint is completely **public**. No API key is required, making it incredibly easy to pull down into front-end dashboards.
 </Note>
 
 <ParamField query="period" type="string" default="24h">
-  Time window: `1h`, `6h`, or `24h`.
+  The time window to look back. Valid options: `1h`, `6h`, `24h`, `7d`, `30d`.
 </ParamField>
 
 <ParamField query="limit" type="integer" default="10">
-  Max items per list (1–25).
+  Maximum items to return per leaderboard list (1–25).
 </ParamField>
 
 <ParamField query="category" type="string">
-  Optional category filter: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
+  Isolate to a specific category: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
 </ParamField>
 
-## What you get
+## What you get back
 
-Three ranked lists, each sorted by a different metric:
+We return three arrays of market data, each sorted by a different core metric:
 
-| List | Sorted by | Use case |
+| Leaderboard | Sorted by | When to use it |
 |------|-----------|----------|
-| `most_alerts` | Alert count (desc) | Which markets have the most insider activity |
-| `highest_signal` | Avg signal score (desc, min 2 alerts) | Which markets have the strongest insider signals |
-| `biggest_trades` | Total USDC volume (desc) | Where the biggest money is moving |
+| `most_alerts` | Count (descending) | Finding where the highest volume of individual suspicious trades are happening. |
+| `highest_signal` | Avg score (descending) | Finding markets with the absolute strongest, most highly-coordinated insider conviction. |
+| `biggest_trades` | Total USDC (descending) | Following the literal whale money. |
 
-Each item includes: `market_id`, `event_title`, `event_slug`, `category`, `alert_count`, `avg_signal`, `total_usdc`, `latest_alert`.
+### Try it out
 
 <RequestExample>
 
@@ -47,22 +48,25 @@ r = requests.get(
     params={"period": "6h", "limit": 5, "category": "crypto"}
 )
 data = r.json()
-for m in data["most_alerts"]:
-    print(f"{m['event_title']} — {m['alert_count']} alerts, ${m['total_usdc']}")
+
+print("🔥 HOTTEST MARKETS:")
+for market in data["most_alerts"]:
+    print(f"- {market['event_title']}: {market['alert_count']} alerts, ${market['total_usdc']}")
 ```
 
 ```javascript JavaScript
-const r = await fetch(
+const response = await fetch(
   "https://polychadsbot.xyz/api/v1/hot-markets?period=24h&limit=10"
 );
-const { most_alerts, highest_signal, biggest_trades } = await r.json();
+const { most_alerts, highest_signal, biggest_trades } = await response.json();
+console.log("Whale markets:", biggest_trades);
 ```
 
 </RequestExample>
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 {
   "period": "24h",
   "most_alerts": [

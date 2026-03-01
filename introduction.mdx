@@ -1,53 +1,54 @@
 ---
-title: Polychads API
-description: Polymarket insider alert intelligence — real-time detection, delivered via API
+title: Welcome to Polychads
+description: Polymarket insider alert intelligence — real-time detection, delivered straight to your stack.
 ---
 
 ## What we do
 
-We watch **every trade on [Polymarket](https://polymarket.com)** and flag the suspicious ones — fresh wallets dropping thousands on a single outcome, wallets accumulating positions across multiple buys, and clusters of new wallets all betting the same way within minutes.
+We watch **every single trade on [Polymarket](https://polymarket.com)** so you don't have to. 
 
-When we spot it, you get an alert — with the wallet, the market, the trade size, the price, and a **signal score** telling you how likely it is to be insider activity.
+When a brand new wallet drops $10k on a niche political outcome? We see it. When five different fresh wallets start accumulating positions on the same market within minutes of each other? We catch that too. 
+
+The moment we detect suspicious or highly-convicted trading behavior, we fire off an alert. You get the wallet address, the market details, the trade size, the exact entry price, and a proprietary **Signal Score** that tells you exactly how likely it is to be insider activity.
 
 <CardGroup cols={2}>
-  <Card title="Real-Time Detection" icon="bolt">
-    Alerts hit your app the moment we detect suspicious activity. WebSocket streaming for zero-latency delivery.
+  <Card title="Zero Latency Detection" icon="bolt">
+    We don't do delays (unless you're on the free tier). If you need the alpha *now*, our WebSocket stream delivers alerts milliseconds after the trade confirms on-chain.
   </Card>
   <Card title="AI Signal Scoring" icon="crosshairs">
-    Every alert gets a 0–100 score based on wallet age, trade size, timing patterns, and accumulation behavior.
+    We rank every alert from 0 to 100. We look at wallet age, historical win rate, trade size relative to the pool, and coordination patterns to separate the noise from the signal.
   </Card>
-  <Card title="Full Context" icon="chart-bar">
-    Wallet history, accumulation patterns, entry prices, market odds, cluster analysis — everything you need to act.
+  <Card title="Full On-Chain Context" icon="chart-bar">
+    We give you the full picture. You'll know if a wallet is aggressively accumulating, if they're part of a larger cluster, and exactly what their average entry price is.
   </Card>
-  <Card title="Simple Integration" icon="plug">
-    REST for historical data, WebSocket for live, webhooks for push. JSON in, JSON out. Works with anything.
+  <Card title="Built for Builders" icon="plug">
+    REST APIs for pulling historical data. WebSockets for live streaming. Webhooks for enterprise push delivery. It's just JSON — plug it into whatever you're building.
   </Card>
 </CardGroup>
 
-## Get your API key
+## Getting your API key
 
-Get instant access through our Telegram bot:
+We manage access through Telegram to keep things simple and stop spam.
 
-<Card title="@chadsapibot" icon="key" href="https://t.me/chadsapibot">
-  Open the bot → tap **Get API Key** → choose Free or Pro → done. Takes 10 seconds.
-</Card>
-
-## Base URL
-
-```
-https://polychadsbot.xyz/api/v1
-```
+<CardGroup cols={2}>
+  <Card title="Free & Pro Tiers" icon="robot" href="https://t.me/chadsapibot">
+    Need a key right now? Open **@chadsapibot**, tap "Get API Key", and choose your tier. Takes 10 seconds.
+  </Card>
+  <Card title="Enterprise Access" icon="briefcase" href="https://t.me/alrerat">
+    Building something huge? Need unlimited rate limits and Webhook delivery? DM **@alrerat** to talk Enterprise.
+  </Card>
+</CardGroup>
 
 ## Where to go next
 
 <CardGroup cols={3}>
   <Card title="Quick Start" icon="rocket" href="/quickstart">
-    First alert in 30 seconds
+    Get your first alert flowing in under 60 seconds.
   </Card>
   <Card title="API Reference" icon="rectangle-terminal" href="/api-reference/overview">
-    Every endpoint documented
+    Dive deep into every endpoint we offer.
   </Card>
-  <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
-    Live streaming setup
+  <Card title="WebSocket Guide" icon="bolt" href="/real-time/websocket">
+    Because polling is for boomers. Set up your live stream.
   </Card>
 </CardGroup>

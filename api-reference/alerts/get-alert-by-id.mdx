@@ -1,17 +1,21 @@
 ---
 title: Get Alert by ID
 openapi: GET /alerts/{id}
-description: Fetch a single alert
+description: Retrieve a specific historical alert by its unique database ID.
 ---
 
+Have an exact alert ID from a webhook payload or WebSocket stream? Drop it here to pull down the full JSON object including all enrichment details.
+
 <ParamField path="id" type="integer" required>
-  Alert ID.
+  The unique ID of the alert.
 </ParamField>
+
+### Try it out
 
 <RequestExample>
 
 ```bash cURL
-curl -H "Authorization: Bearer YOUR_KEY" \
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
   https://polychadsbot.xyz/api/v1/alerts/2220
 ```
 
@@ -19,7 +23,7 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 {
   "id": 2220,
   "alert_type": "fresh_accumulator",
@@ -41,7 +45,7 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 }
 ```
 
-```json 404
+```json 404 Not Found
 {
   "detail": "Alert 99999 not found"
 }

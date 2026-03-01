@@ -1,44 +1,60 @@
 ---
 title: Get My Info
 openapi: GET /me
-description: Your API key details and usage
+description: Instantly check your API key details, tier limits, and daily usage.
 ---
 
-Check your tier, rate limits, and how many requests you've used today.
+Not sure if you're hitting your rate limits or if your 30-day Pro trial expired? Drop your key in here. We'll bounce back exactly what your integration is currently allowed to do.
 
 <RequestExample>
 
 ```bash cURL
-curl -H "Authorization: Bearer YOUR_KEY" \
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
   https://polychadsbot.xyz/api/v1/me
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://polychadsbot.xyz/api/v1/me",
+    headers={"Authorization": "Bearer YOUR_KEY_HERE"}
+)
+print(response.json())
 ```
 
 </RequestExample>
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 {
-  "name": "MyApp",
+  "name": "My Prod Bot",
   "tier": "pro",
   "rate_limit": "300/min",
   "websocket": true,
   "webhooks": false,
   "realtime": true,
   "max_page_size": 50,
-  "requests_today": 142
+  "requests_today": 1240
 }
 ```
 
 </ResponseExample>
 
+## Response Breakdown
+
 | Field | Type | What it tells you |
 |-------|------|-------------------|
-| `name` | string | Label for this key |
-| `tier` | string | `free`, `pro`, or `enterprise` |
-| `rate_limit` | string | Your limit (e.g. `300/min`) |
-| `websocket` | bool | WebSocket access enabled |
-| `webhooks` | bool | Webhook delivery enabled |
-| `realtime` | bool | Real-time data (vs 5-min delay) |
-| `max_page_size` | int | Max results per page |
-| `requests_today` | int | Requests used today |
+| `name` | string | Any custom label you've set for this key (useful for managing multiple integrations). |
+| `tier` | string | Either `free`, `pro`, or `enterprise`. |
+| `rate_limit` | string | Your hard cap limits (e.g., `300/min`). |
+| `websocket` | boolean | True if you have access to the `/ws/alerts` live stream. |
+| `webhooks` | boolean | True if you can register HTTP endpoints for push delivery. |
+| `realtime` | boolean | True if you get alerts instantly, False if you have the 5-minute Free tier delay. |
+| `max_page_size` | integer | Max results you can request per page on the `/alerts` REST endpoint. |
+| `requests_today` | integer | Total API calls you've made since UTC midnight. |
+
+<Tip>
+Building a front-end? Hit this endpoint on page load to check if the user's provided API key is valid before opening any WebSocket connections.
+</Tip>

@@ -1,19 +1,21 @@
 ---
 title: Get Latest Alerts
 openapi: GET /alerts/latest
-description: Most recent insider alerts
+description: The absolute freshest insider alpha, ordered newest first.
 ---
 
-Returns the latest alerts, sorted newest first.
+Don't want to mess with WebSockets but still need the latest action? Hit this endpoint to get the most recent alerts our engine has pumped out.
 
 <ParamField query="limit" type="integer" default="10">
-  How many to return. Max 50.
+  How many of the latest alerts you want to pull. Max is 50.
 </ParamField>
+
+### Try it out
 
 <RequestExample>
 
 ```bash cURL
-curl -H "Authorization: Bearer YOUR_KEY" \
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
   "https://polychadsbot.xyz/api/v1/alerts/latest?limit=2"
 ```
 
@@ -22,26 +24,28 @@ import requests
 
 r = requests.get(
     "https://polychadsbot.xyz/api/v1/alerts/latest",
-    headers={"Authorization": "Bearer YOUR_KEY"},
+    headers={"Authorization": "Bearer YOUR_KEY_HERE"},
     params={"limit": 2}
 )
+
 for alert in r.json():
-    print(f"{alert['side']} {alert['outcome']} — ${alert['usdc_value']} — score {alert['signal_score']}")
+    print(f"🚨 {alert['side']} {alert['outcome']} on '{alert['event_title']}' for ${alert['usdc_value']}")
 ```
 
 ```javascript JavaScript
-const r = await fetch(
+const response = await fetch(
   "https://polychadsbot.xyz/api/v1/alerts/latest?limit=2",
-  { headers: { Authorization: `Bearer ${apiKey}` } }
+  { headers: { Authorization: `Bearer YOUR_KEY_HERE` } }
 );
-const alerts = await r.json();
+const alerts = await response.json();
+console.log(alerts);
 ```
 
 </RequestExample>
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 [
   {
     "id": 2220,

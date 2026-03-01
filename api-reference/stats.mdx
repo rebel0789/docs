@@ -1,13 +1,19 @@
 ---
-title: Get Stats
+title: Get System Stats
 openapi: GET /stats
-description: System-wide alert statistics
+description: Pull down global statistics on the Polychads engine for the current day.
 ---
+
+Curious about how active Polymarket insiders are right now? This endpoint returns the raw numbers on everything our engine has tracked today (resetting at UTC midnight).
+
+<Note>
+This endpoint requires an API key, but it does **not** consume rate limits and accepts keys from any tier.
+</Note>
 
 <RequestExample>
 
 ```bash cURL
-curl -H "Authorization: Bearer YOUR_KEY" \
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
   https://polychadsbot.xyz/api/v1/stats
 ```
 
@@ -15,26 +21,28 @@ curl -H "Authorization: Bearer YOUR_KEY" \
 
 <ResponseExample>
 
-```json 200
+```json 200 OK
 {
-  "total_alerts": 2226,
-  "alerts_today": 183,
-  "avg_signal_today": 59.2,
-  "clusters_today": 0,
-  "win_rate": 0.0,
-  "total_resolved": 0,
-  "total_won": 0
+  "total_alerts": 14205,
+  "alerts_today": 241,
+  "avg_signal_today": 68.2,
+  "clusters_today": 14,
+  "win_rate": 0.58,
+  "total_resolved": 4820,
+  "total_won": 2795
 }
 ```
 
 </ResponseExample>
 
+## Response Breakdown
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `total_alerts` | int | All-time alert count |
-| `alerts_today` | int | Today's alerts (UTC) |
-| `avg_signal_today` | float | Mean signal score today |
-| `clusters_today` | int | Cluster alerts today |
-| `win_rate` | float | % of resolved alerts that won |
-| `total_resolved` | int | Markets that resolved |
-| `total_won` | int | Trades that hit |
+| `total_alerts` | integer | The all-time number of suspicious trades tracked in our database. |
+| `alerts_today` | integer | How many alerts have fired since UTC midnight. |
+| `avg_signal_today` | float | The average Signal Score (0-100) of today's alerts. High numbers mean heavy insider conviction today. |
+| `clusters_today` | integer | How many times we caught multiple fresh wallets coordinating buys simultaneously. |
+| `win_rate` | float | The historical success rate (e.g., `0.58` = 58%) of alerts where the market has fully resolved. |
+| `total_resolved` | integer | Of all the markets we've issued alerts for, how many have definitively closed. |
+| `total_won` | integer | Of those resolved markets, how many times the alerted trade was correct. |

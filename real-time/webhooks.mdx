@@ -1,55 +1,65 @@
 ---
 title: Webhooks
-description: Get alerts pushed to your server via HTTP POST
+openapi: POST /webhooks
+description: We push alerts to your servers immediately. No polling required.
 ---
 
 <Note>
-Webhooks are **Enterprise** only. DM [@alrerat](https://t.me/alrerat) to upgrade.
+Webhooks are strictly for **Enterprise** infrastructure. If you're running a massive deployment and need guaranteed HTTP delivery rather than maintaining WebSocket state, DM **[@alrerat](https://t.me/alrerat)** to set up a massive custom limit.
 </Note>
 
-## How it works
+## How the Webhook System Works
 
-Register a URL. When an alert matches your filters, we POST it to your endpoint. You respond `200` to confirm receipt.
+You register a specific URL endpoint with us. The millisecond an alert passes your customized criteria, we blast a `POST` payload containing the complete alert JSON straight to your server.
 
-## Create
+**Your only job:** Respond with a generic `200 OK` status code within 5 seconds to tell us you received it. (Failed deliveries are not retried, to prevent backing up the queue).
 
-```bash
+## Create a Webhook
+
+Register your endpoint and tell us exactly what kind of alerts you want us to send.
+
+<RequestExample>
+
+```bash cURL
 curl -X POST \
-  -H "Authorization: Bearer YOUR_KEY" \
+  -H "Authorization: Bearer YOUR_KEY_HERE" \
   -H "Content-Type: application/json" \
   -d '{
-    "url": "https://your-app.com/webhook",
+    "url": "https://your-production-app.com/api/polychads-hook",
     "categories": "crypto,world",
-    "min_signal": 40
+    "min_signal": 80
   }' \
   https://polychadsbot.xyz/api/v1/webhooks
 ```
 
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 OK
+{
+  "id": "hook_8812jka...",
+  "url": "https://your-production-app.com/api/polychads-hook"
+}
+```
+
+</ResponseExample>
+
+### Configuration Fields
+
 | Field | Required | Description |
 |-------|----------|-------------|
-| `url` | Yes | Your HTTPS endpoint |
-| `categories` | No | Comma-separated filter |
-| `min_signal` | No | Minimum signal score |
+| `url` | Yes | Your secure HTTPS endpoint. We do not support unencrypted HTTP delivery. |
+| `categories` | No | Comma-separated list of genres you care about. If omitted, we ping you for everything. |
+| `min_signal` | No | Only send alerts with a Signal Score (0-100) equal to or above this number. Perfect for noise reduction. |
 
-## List
+---
 
-```bash
-curl -H "Authorization: Bearer YOUR_KEY" \
-  https://polychadsbot.xyz/api/v1/webhooks
-```
+## The Payload Structure
 
-## Delete
+When an alert fires, we will hit your `url` with a `POST` request. The body will be the standard [Alert Object](/reference/alert-object) formatted as JSON:
 
-```bash
-curl -X DELETE -H "Authorization: Bearer YOUR_KEY" \
-  https://polychadsbot.xyz/api/v1/webhooks/1
-```
-
-## Payload
-
-Your endpoint receives the full [Alert object](/reference/alert-object) as JSON:
-
-```json
+```json What lands on your server
 {
   "id": 2221,
   "alert_type": "fresh",
@@ -64,4 +74,22 @@ Your endpoint receives the full [Alert object](/reference/alert-object) as JSON:
 }
 ```
 
-Respond with `200` within 5 seconds. Failed deliveries are not retried.
+---
+
+## Manage Existing Webhooks
+
+### List All Webhooks
+See exactly what hooks are active on your current Enterprise key.
+
+```bash
+curl -H "Authorization: Bearer YOUR_KEY_HERE" \
+  https://polychadsbot.xyz/api/v1/webhooks
+```
+
+### Delete a Webhook
+Taking down a server? Clean up your hook so we stop hitting an empty endpoint.
+
+```bash
+curl -X DELETE -H "Authorization: Bearer YOUR_KEY_HERE" \
+  https://polychadsbot.xyz/api/v1/webhooks/{webhook_id}
+```

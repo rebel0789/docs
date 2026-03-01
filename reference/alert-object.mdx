@@ -1,69 +1,93 @@
 ---
-title: Alert Object
-description: Schema for all alert responses
+title: The Alert Object
+description: Understand exactly what we're handing you when we catch a whale.
 ---
 
-Every endpoint that returns alerts uses this structure.
+Whether you're hitting the REST APIs (`/alerts`, `/hot-markets`) or listening to the live WebSocket stream, every single alert you receive follows this exact JSON structure.
 
-## Fields
+## Core Fields
 
-| Field | Type | Description |
+| Field | Type | What it tells you |
 |-------|------|-------------|
-| `id` | int | Unique ID |
-| `alert_type` | string | `fresh`, `fresh_accumulator`, or `cluster` |
-| `wallet_address` | string | Trader's address |
-| `market_id` | string | Polymarket contract ID |
-| `event_slug` | string | URL-safe market slug |
-| `event_title` | string | Market question |
-| `side` | string | `BUY` or `SELL` |
-| `outcome` | string | `Yes`, `No`, or named outcome |
-| `entry_price` | float | Price paid (0.0–1.0) |
-| `usdc_value` | float | Trade size in USDC |
-| `signal_score` | int | 0–100 insider likelihood |
-| `trade_count` | int | Wallet's total markets traded |
-| `category` | string | See [Categories](/reference/categories) |
-| `created_at` | string | UTC timestamp |
-| `resolved` | bool | Market has resolved |
-| `won` | bool | Trade was correct |
-| `profit_usdc` | float | P&L after resolution |
-| `details` | object | Extended data (see below) |
+| `id` | integer | Our internal unique tracking ID. |
+| `alert_type` | string | `fresh`, `fresh_accumulator`, or `cluster`. (See below). |
+| `wallet_address` | string | The literal on-chain address of the trader. |
+| `market_id` | string | The Polymarket contract address for this specific market. |
+| `event_slug` | string | The URL-friendly name of the market. |
+| `event_title` | string | The actual human-readable market question. |
+| `side` | string | Always `BUY` or `SELL`. |
+| `outcome` | string | What they bet on (`Yes`, `No`, or a specific multi-choice name). |
+| `entry_price` | float | The price they paid per share (0.01 – 0.99). |
+| `usdc_value` | float | Exactly how much USDC they deployed on this specific trade. |
+| `signal_score` | integer | Our AI rating from 0–100 measuring the likelihood of insider knowledge. |
+| `trade_count` | integer | How many different markets this wallet has historically traded. |
+| `category` | string | e.g., `crypto`, `politics`, `world`. |
+| `created_at` | string | UTC timestamp of when we detected the trade. |
 
-## Alert types
+### Resolution Fields
+These fields are populated only after the market has officially resolved on Polymarket. While the market is live, they remain `null` or `false`.
+
+| Field | Type | What it tells you |
+|-------|------|-------------|
+| `resolved` | boolean | True if the market has officially closed and paid out. |
+| `won` | boolean | True if this specific alerted trade ended up taking profit. |
+| `profit_usdc` | float | The net P&L realized by the trader. |
+
+---
+
+## Alert Types Breakdown
+
+We classify insider activity into three distinct buckets, and inject specific tracking data into the `details` object depending on what we see.
 
 <AccordionGroup>
-  <Accordion title="fresh — Brand new wallet">
-    A wallet with little or no history making a significant trade. Fresh wallets are the strongest insider signal because they're often created specifically to avoid detection.
-  </Accordion>
-
-  <Accordion title="fresh_accumulator — Repeat buyer">
-    A fresh wallet making multiple buys on the same market. Shows conviction. The `details` object includes:
-
-    ```json
+  <Accordion title="fresh — The Ghost Protocol">
+    A brand new wallet with zero or near-zero history suddenly drops heavy volume on a specific outcome. These are the strongest raw insider signals because wallets are often funded exclusively to execute this one trade without tying back to a main identity.
+    
+    ```json The Details Object
     {
-      "is_accumulating": true,
-      "market_buy_count": 4,
-      "market_total_bought": 6200.0,
-      "market_avg_price": 0.31
+      "wallet_age_days": 0
     }
     ```
   </Accordion>
 
-  <Accordion title="cluster — Coordinated group">
-    Multiple wallets buying the same outcome within a short window. Suggests coordination.
+  <Accordion title="fresh_accumulator — The High Conviction Buyer">
+    A fresh wallet that isn't just buying once — they are repeatedly smashing the buy button on the exact same market over time. This shows extreme conviction.
 
-    ```json
+    ```json The Details Object
     {
-      "cluster_size": 5,
-      "cluster_total_usdc": 12500.0,
-      "cluster_wallets": ["0x1...", "0x2...", "0x3..."]
+      "wallet_age_days": 2,
+      "is_accumulating": true,
+      "market_buy_count": 4,          // How many separate buys they've executed
+      "market_total_bought": 6200.0,  // Total USDC deployed across all buys
+      "market_avg_price": 0.31        // Their blended average entry price
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="cluster — The Coordinated Strike">
+    We detect multiple completely separate wallets all buying the exact same outcome within a very tight time window. Highly indicative of coordinated groups or single actors using distributed wallets.
+
+    ```json The Details Object
+    {
+      "cluster_size": 5,              // How many wallets moved together
+      "cluster_total_usdc": 12500.0,  // The combined volume of the strike
+      "cluster_wallets": [            // The addresses involved
+        "0x1abc...", 
+        "0x2def...", 
+        "0x3ghi..."
+      ]
     }
     ```
   </Accordion>
 </AccordionGroup>
 
-## Full example
+---
 
-```json
+## The Full Payload Example
+
+Here is exactly what a `fresh_accumulator` alert looks like when it hits your server:
+
+```json Right off the wire
 {
   "id": 2220,
   "alert_type": "fresh_accumulator",

@@ -1,57 +1,72 @@
 ---
 title: Quick Start
-description: Your first alert in under a minute
+description: Get your first insider alert flowing in under 60 seconds.
 ---
 
-<Steps>
-  <Step title="Get your API key">
-    Open [@chadsapibot](https://t.me/chadsapibot) on Telegram. Tap **Get API Key**, join our alerts channel, and choose your tier. You'll get a key like `pc_Kr_Ohz...`.
+Let's cut the fluff and get you connected. Follow these four steps and you'll be pulling live Polymarket alpha in less than a minute.
 
-    <Tip>Pro tier is free for 30 days — real-time data, WebSocket, 300 req/min.</Tip>
+<Steps>
+  <Step title="Grab an API Key">
+    Head over to **[@chadsapibot](https://t.me/chadsapibot)** on Telegram. Tap *Get API Key*, join our community channel, and select your tier. 
+    
+    You'll be handed a key that looks like `pc_Kr_Ohz...`. Copy it.
+    
+    <Tip>Grab the Pro tier. It's free for 30 days and gives you real-time data and WebSocket access. Free tier has a mandatory 5-minute delay on all alerts.</Tip>
   </Step>
 
-  <Step title="Verify your key">
+  <Step title="Verify your connection">
+    Let's make sure the key works and check your limits. Drop this into your terminal:
+
     ```bash
-    curl -H "Authorization: Bearer YOUR_KEY" \
+    curl -H "Authorization: Bearer YOUR_KEY_HERE" \
       https://polychadsbot.xyz/api/v1/me
     ```
 
-    You'll see your tier, rate limit, and today's usage.
+    If it works, you'll get back a JSON payload showing your exact tier, what features are unlocked, and your daily request count.
   </Step>
 
-  <Step title="Pull latest alerts">
+  <Step title="Pull the latest alpha">
+    Time for the good stuff. Let's pull the 5 most recent insider alerts our engine detected.
+
     ```bash
-    curl -H "Authorization: Bearer YOUR_KEY" \
+    curl -H "Authorization: Bearer YOUR_KEY_HERE" \
       "https://polychadsbot.xyz/api/v1/alerts/latest?limit=5"
     ```
 
-    Returns the 5 most recent insider alerts with signal scores, prices, and wallet data.
+    You're now looking at raw insider action — the wallet address, the market they bet on, exactly how much USDC they dropped, and our AI Signal Score rating the trade's suspiciousness.
   </Step>
 
-  <Step title="Check hot markets">
+  <Step title="Optional: See what's trending (Hot Markets)">
+    Want to know where the coordinated money is flowing right now? Hit the Hot Markets endpoint to see markets ranked by alert volume and signal strength.
+
     ```bash
-    curl -H "Authorization: Bearer YOUR_KEY" \
+    curl -H "Authorization: Bearer YOUR_KEY_HERE" \
       "https://polychadsbot.xyz/api/v1/hot-markets?period=24h"
     ```
-
-    See which markets have the most insider activity — ranked by alert count, signal score, and trade volume.
   </Step>
 
-  <Step title="Go real-time (Pro)">
+  <Step title="Go fully Real-Time (Pro/Enterprise Only)">
+    Polling is slow. If you want alerts the literal millisecond we detect them, hook into our WebSocket stream. 
+
     ```javascript
     const ws = new WebSocket(
-      "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
+      "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY_HERE"
     );
 
-    ws.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      
+      // We only care about the actual alert payloads
       if (msg.type === "alert") {
-        console.log(msg.data.event_title);
-        console.log(`${msg.data.side} ${msg.data.outcome} — $${msg.data.usdc_value}`);
+        const data = msg.data;
+        console.log(`🚨 INSIDER ALERT: ${data.event_title}`);
+        console.log(`Action: ${data.side} ${data.outcome}`);
+        console.log(`Size: $${data.usdc_value} @ ${data.entry_price}¢`);
+        console.log(`Signal Score: ${data.signal_score}/100`);
       }
     };
 
-    // Keep-alive every 25s
+    // Don't forget your keep-alive ping!
     setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) ws.send("ping");
     }, 25000);
@@ -59,19 +74,21 @@ description: Your first alert in under a minute
   </Step>
 </Steps>
 
-## Next
+## You're wired in. What next?
+
+Now that the data is flowing, here is where you should look to build out your integration:
 
 <CardGroup cols={2}>
-  <Card title="Endpoints" icon="code" href="/api-reference/overview">
-    Full REST API reference
+  <Card title="The Alert Object" icon="brackets-curly" href="/reference/alert-object">
+    Understand exactly what every field in our JSON payload means.
   </Card>
-  <Card title="Hot Markets" icon="fire" href="/api-reference/hot-markets">
-    Trending insider markets
+  <Card title="Signal Scores Explained" icon="chart-bar" href="/reference/signal-score">
+    How we calculate the 0-100 score and what thresholds you should care about.
   </Card>
-  <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
-    Real-time streaming guide
+  <Card title="Full API Reference" icon="code" href="/api-reference/overview">
+    Deep dive into pagination, filtering, and historical queries.
   </Card>
-  <Card title="Signal Scores" icon="chart-bar" href="/reference/signal-score">
-    What the numbers mean
+  <Card title="Filter Presets" icon="filter" href="/api-reference/presets/list">
+    Save your complex filter criteria directly to your API key.
   </Card>
 </CardGroup>

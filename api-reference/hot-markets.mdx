@@ -1,0 +1,107 @@
+---
+title: Get Hot Markets
+description: Markets with the most insider activity right now
+---
+
+Surface the hottest markets based on alert volume, signal strength, and trade size.
+
+<Note>
+No API key required — guest access uses free-tier defaults. Authenticated requests get the same data.
+</Note>
+
+<ParamField query="period" type="string" default="24h">
+  Time window: `1h`, `6h`, or `24h`.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Max items per list (1–25).
+</ParamField>
+
+<ParamField query="category" type="string">
+  Optional category filter: `crypto`, `politics`, `world`, `tech`, `finance`, `pop_culture`, `other`.
+</ParamField>
+
+## What you get
+
+Three ranked lists, each sorted by a different metric:
+
+| List | Sorted by | Use case |
+|------|-----------|----------|
+| `most_alerts` | Alert count (desc) | Which markets have the most insider activity |
+| `highest_signal` | Avg signal score (desc, min 2 alerts) | Which markets have the strongest insider signals |
+| `biggest_trades` | Total USDC volume (desc) | Where the biggest money is moving |
+
+Each item includes: `market_id`, `event_title`, `event_slug`, `category`, `alert_count`, `avg_signal`, `total_usdc`, `latest_alert`.
+
+<RequestExample>
+
+```bash cURL
+curl "https://polychadsbot.xyz/api/v1/hot-markets?period=1h&limit=5"
+```
+
+```python Python
+import requests
+
+r = requests.get(
+    "https://polychadsbot.xyz/api/v1/hot-markets",
+    params={"period": "6h", "limit": 5, "category": "crypto"}
+)
+data = r.json()
+for m in data["most_alerts"]:
+    print(f"{m['event_title']} — {m['alert_count']} alerts, ${m['total_usdc']}")
+```
+
+```javascript JavaScript
+const r = await fetch(
+  "https://polychadsbot.xyz/api/v1/hot-markets?period=24h&limit=10"
+);
+const { most_alerts, highest_signal, biggest_trades } = await r.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "period": "24h",
+  "most_alerts": [
+    {
+      "market_id": "0x1234...abcd",
+      "event_title": "Will ETH hit $5000 by April?",
+      "event_slug": "eth-5000-april",
+      "category": "crypto",
+      "alert_count": 12,
+      "avg_signal": 68.5,
+      "total_usdc": 45200.0,
+      "latest_alert": "2026-03-01T10:15:22"
+    }
+  ],
+  "highest_signal": [
+    {
+      "market_id": "0x5678...efgh",
+      "event_title": "US strikes Iran by March 31?",
+      "event_slug": "us-strikes-iran-by-march-31-2026",
+      "category": "world",
+      "alert_count": 4,
+      "avg_signal": 85.0,
+      "total_usdc": 18500.0,
+      "latest_alert": "2026-03-01T09:42:10"
+    }
+  ],
+  "biggest_trades": [
+    {
+      "market_id": "0x9abc...ijkl",
+      "event_title": "Opinion FDV above $500M?",
+      "event_slug": "opinion-fdv-above-500m",
+      "category": "crypto",
+      "alert_count": 6,
+      "avg_signal": 72.3,
+      "total_usdc": 62100.0,
+      "latest_alert": "2026-03-01T10:08:44"
+    }
+  ]
+}
+```
+
+</ResponseExample>

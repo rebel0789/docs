@@ -59,6 +59,12 @@
             ]
           },
           {
+            "group": "Hot Markets",
+            "pages": [
+              "api-reference/hot-markets"
+            ]
+          },
+          {
             "group": "Account",
             "pages": [
               "api-reference/stats",

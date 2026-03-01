@@ -114,6 +114,42 @@ components:
       properties:
         detail:
           type: string
+    HotMarketItem:
+      type: object
+      properties:
+        market_id:
+          type: string
+        event_title:
+          type: string
+        event_slug:
+          type: string
+        category:
+          type: string
+        alert_count:
+          type: integer
+        avg_signal:
+          type: number
+        total_usdc:
+          type: number
+        latest_alert:
+          type: string
+    HotMarketsResponse:
+      type: object
+      properties:
+        period:
+          type: string
+        most_alerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HotMarketItem'
+        highest_signal:
+          type: array
+          items:
+            $ref: '#/components/schemas/HotMarketItem'
+        biggest_trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/HotMarketItem'
 paths:
   /alerts/latest:
     get:
@@ -185,6 +221,11 @@ paths:
             minimum: 0
             maximum: 100
           description: Minimum signal score
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Text search — matches market title, slug, or wallet address
       responses:
         "200":
           description: Paginated alerts
@@ -240,3 +281,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KeyInfo'
+
+  /hot-markets:
+    get:
+      operationId: getHotMarkets
+      summary: Get Hot Markets
+      description: Markets ranked by insider activity — most alerts, highest signal, biggest trades.
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: "24h"
+            enum: ["1h", "6h", "24h"]
+          description: Time window
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 25
+          description: Max items per list
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [crypto, politics, world, tech, finance, pop_culture, other]
+          description: Filter by category
+      responses:
+        "200":
+          description: Three ranked lists of hot markets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotMarketsResponse'
+

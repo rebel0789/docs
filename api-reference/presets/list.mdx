@@ -1,0 +1,45 @@
+---
+title: List Presets
+openapi: GET /presets
+description: Get all filter presets for the current user
+---
+
+Retrieve all saved alert filter configurations.
+
+<RequestExample>
+
+```bash cURL
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://polychadsbot.xyz/api/v1/presets
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "presets": [
+    {
+      "id": "1",
+      "name": "High Signal Crypto",
+      "filters": {
+        "min_signal": 80,
+        "category": "crypto",
+        "min_usdc": 1000
+      },
+      "created_at": "2026-03-01 10:15:22"
+    }
+  ]
+}
+```
+
+</ResponseExample>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `presets` | array | List of preset objects |
+| `id` | string | Internal preset ID |
+| `name` | string | User-provided name for the preset |
+| `filters` | object | The saved filter configuration |
+| `created_at` | string | UTC timestamp of creation |

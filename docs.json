@@ -65,6 +65,21 @@
             ]
           },
           {
+            "group": "User & Watchlists",
+            "pages": [
+              "api-reference/user/get-watchlist",
+              "api-reference/user/toggle-watchlist"
+            ]
+          },
+          {
+            "group": "Filter Presets",
+            "pages": [
+              "api-reference/presets/list",
+              "api-reference/presets/create",
+              "api-reference/presets/delete"
+            ]
+          },
+          {
             "group": "Account",
             "pages": [
               "api-reference/stats",
@@ -88,7 +103,7 @@
         },
         {
           "anchor": "Telegram Bot",
-          "href": "https://t.me/Polychadsbot",
+          "href": "https://t.me/chadsapibot",
           "icon": "robot"
         },
         {
@@ -113,7 +128,7 @@
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://t.me/alrerat"
+      "href": "https://t.me/chadsapibot"
     }
   },
   "contextual": {

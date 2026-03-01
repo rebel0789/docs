@@ -1,28 +1,36 @@
 ---
 title: Polychads API
-description: Polymarket insider alert intelligence — delivered via API
+description: Polymarket insider alert intelligence — real-time detection, delivered via API
 ---
 
 ## What we do
 
-We watch every trade on [Polymarket](https://polymarket.com) and flag the suspicious ones. Fresh wallets dropping $5K on a single outcome. Wallets accumulating positions across multiple buys. Clusters of new wallets all betting the same way within minutes.
+We watch **every trade on [Polymarket](https://polymarket.com)** and flag the suspicious ones — fresh wallets dropping thousands on a single outcome, wallets accumulating positions across multiple buys, and clusters of new wallets all betting the same way within minutes.
 
-When we spot it, you get an alert — with the wallet, the market, the size, the price, and a signal score telling you how likely it is to be insider activity.
+When we spot it, you get an alert — with the wallet, the market, the trade size, the price, and a **signal score** telling you how likely it is to be insider activity.
 
 <CardGroup cols={2}>
-  <Card title="Real-Time Delivery" icon="bolt">
-    Alerts hit your WebSocket the moment we detect them. No polling, no delay.
+  <Card title="Real-Time Detection" icon="bolt">
+    Alerts hit your app the moment we detect suspicious activity. WebSocket streaming for zero-latency delivery.
   </Card>
-  <Card title="Signal Scoring" icon="crosshairs">
-    Every alert gets a 0-100 score based on wallet age, trade size, and timing patterns.
+  <Card title="AI Signal Scoring" icon="crosshairs">
+    Every alert gets a 0–100 score based on wallet age, trade size, timing patterns, and accumulation behavior.
   </Card>
   <Card title="Full Context" icon="chart-bar">
-    Wallet history, accumulation patterns, entry prices, market odds — everything you need to act.
+    Wallet history, accumulation patterns, entry prices, market odds, cluster analysis — everything you need to act.
   </Card>
   <Card title="Simple Integration" icon="plug">
-    REST for historical data, WebSocket for live. JSON in, JSON out. Works with anything.
+    REST for historical data, WebSocket for live, webhooks for push. JSON in, JSON out. Works with anything.
   </Card>
 </CardGroup>
+
+## Get your API key
+
+Get instant access through our Telegram bot:
+
+<Card title="@chadsapibot" icon="key" href="https://t.me/chadsapibot">
+  Open the bot → tap **Get API Key** → choose Free or Pro → done. Takes 10 seconds.
+</Card>
 
 ## Base URL
 

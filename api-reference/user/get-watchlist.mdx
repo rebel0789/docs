@@ -1,0 +1,40 @@
+---
+title: Get Watchlist
+openapi: GET /user/watchlist
+description: Retrieve the authenticated user's starred markets
+---
+
+Returns a list of `market_id` strings that the user has added to their watchlist.
+
+<RequestExample>
+
+```bash cURL
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://polychadsbot.xyz/api/v1/user/watchlist
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "markets": [
+    "0x91836...18391",
+    "0x1819a...bb919",
+    "0xac918...91811"
+  ]
+}
+```
+
+```json 401
+{
+  "detail": "Key not linked to a user profile"
+}
+```
+
+</ResponseExample>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `markets` | array of strings | List of Polymarket `market_id`s that the user is watching |

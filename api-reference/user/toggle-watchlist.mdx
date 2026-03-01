@@ -1,0 +1,48 @@
+---
+title: Toggle Watchlist
+openapi: POST /user/watchlist
+description: Add or remove a market from the authenticated user's watchlist
+---
+
+Toggles the star state of a specific `market_id`. If the market is already in the watchlist, it will be removed. If it is not in the watchlist, it will be added.
+
+<RequestExample>
+
+```bash cURL
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"market_id": "0x91836...18391"}' \
+  https://polychadsbot.xyz/api/v1/user/watchlist
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 (Added)
+{
+  "market_id": "0x91836...18391",
+  "starred": true
+}
+```
+
+```json 200 (Removed)
+{
+  "market_id": "0x91836...18391",
+  "starred": false
+}
+```
+
+```json 400
+{
+  "detail": "Invalid market_id"
+}
+```
+
+</ResponseExample>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `market_id` | string | The Polymarket ID that was toggled |
+| `starred` | boolean | The new state (true if added, false if removed) |

@@ -4,11 +4,13 @@ description: Your first alert in under a minute
 ---
 
 <Steps>
-  <Step title="Get a key">
-    DM [@alrerat](https://t.me/alrerat) on Telegram. You'll get a key like `pc_Kr_Ohz...`.
+  <Step title="Get your API key">
+    Open [@chadsapibot](https://t.me/chadsapibot) on Telegram. Tap **Get API Key**, join our alerts channel, and choose your tier. You'll get a key like `pc_Kr_Ohz...`.
+
+    <Tip>Pro tier is free for 30 days — real-time data, WebSocket, 300 req/min.</Tip>
   </Step>
 
-  <Step title="Check your key">
+  <Step title="Verify your key">
     ```bash
     curl -H "Authorization: Bearer YOUR_KEY" \
       https://polychadsbot.xyz/api/v1/me
@@ -26,7 +28,16 @@ description: Your first alert in under a minute
     Returns the 5 most recent insider alerts with signal scores, prices, and wallet data.
   </Step>
 
-  <Step title="Go real-time (Pro+)">
+  <Step title="Check hot markets">
+    ```bash
+    curl -H "Authorization: Bearer YOUR_KEY" \
+      "https://polychadsbot.xyz/api/v1/hot-markets?period=24h"
+    ```
+
+    See which markets have the most insider activity — ranked by alert count, signal score, and trade volume.
+  </Step>
+
+  <Step title="Go real-time (Pro)">
     ```javascript
     const ws = new WebSocket(
       "wss://polychadsbot.xyz/ws/alerts?api_key=YOUR_KEY"
@@ -54,13 +65,13 @@ description: Your first alert in under a minute
   <Card title="Endpoints" icon="code" href="/api-reference/overview">
     Full REST API reference
   </Card>
+  <Card title="Hot Markets" icon="fire" href="/api-reference/hot-markets">
+    Trending insider markets
+  </Card>
   <Card title="WebSocket" icon="bolt" href="/real-time/websocket">
     Real-time streaming guide
   </Card>
   <Card title="Signal Scores" icon="chart-bar" href="/reference/signal-score">
     What the numbers mean
-  </Card>
-  <Card title="Pricing" icon="gem" href="/reference/tiers">
-    Free vs Pro vs Enterprise
   </Card>
 </CardGroup>

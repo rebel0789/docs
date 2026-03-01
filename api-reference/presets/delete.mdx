@@ -1,0 +1,37 @@
+---
+title: Delete Preset
+openapi: DELETE /presets/{preset_id}
+description: Delete a saved preset
+---
+
+Permanently remove a preset from your account.
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  https://polychadsbot.xyz/api/v1/presets/2
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "deleted": true
+}
+```
+
+```json 404
+{
+  "detail": "Preset not found"
+}
+```
+
+</ResponseExample>
+
+| Parameter | Type | In | Description |
+|-----------|------|----|-------------|
+| `preset_id` | integer | path | The ID of the preset to delete |

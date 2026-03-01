@@ -1,0 +1,48 @@
+---
+title: Create Preset
+openapi: POST /presets
+description: Save a new filter preset
+---
+
+Save a custom configuration of alert filters to easily reuse later on the dashboard.
+
+<RequestExample>
+
+```bash cURL
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Whale Buys", "filters": {"min_usdc": 5000}}' \
+  https://polychadsbot.xyz/api/v1/presets
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "id": "2",
+  "name": "Whale Buys"
+}
+```
+
+```json 422
+{
+  "detail": [
+    {
+      "loc": ["body", "name"],
+      "msg": "field required",
+      "type": "value_error.missing"
+    }
+  ]
+}
+```
+
+</ResponseExample>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | **Required**. A label for your preset. |
+| `filters` | object | **Required**. Key-value pairs of filters (e.g. `{"min_usdc": 1000}`). |
+| `created_at` | string | Optional UTC timestamp. Defaults to now. |

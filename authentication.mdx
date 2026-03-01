@@ -1,6 +1,6 @@
 ---
 title: Authentication
-description: How to authenticate API requests
+description: How to get and use your API key
 ---
 
 Every request needs an API key in the `Authorization` header.
@@ -11,7 +11,25 @@ Authorization: Bearer YOUR_API_KEY
 
 ## Get a key
 
-DM [@alrerat](https://t.me/alrerat) on Telegram. Tell us what you're building and we'll set you up with the right tier.
+Open our Telegram bot and generate a key instantly:
+
+<Card title="@chadsapibot on Telegram" icon="robot" href="https://t.me/chadsapibot">
+  Tap **Get API Key** → join our alerts channel → choose Free or Pro tier → your key is generated instantly.
+</Card>
+
+**Available tiers:**
+
+| | Free | Pro (30 days) | Enterprise |
+|--|------|---------------|------------|
+| Rate limit | 60/min | 300/min | Unlimited |
+| Data delay | 5 min | Real-time | Real-time |
+| WebSocket | — | ✅ | ✅ |
+| Webhooks | — | — | ✅ |
+
+<Tip>
+Pro keys are free for 30 days. After expiry, they auto-downgrade to Free tier.
+Enterprise keys are available on request — DM **[@alrerat](https://t.me/alrerat)** on Telegram.
+</Tip>
 
 ## Try it
 
@@ -52,5 +70,5 @@ pc_Kr_Ohzog-pwKB64HmOk7uGf-Q86Zde5kpyD1F2IVDzA
 ```
 
 <Warning>
-Keys can't be recovered after creation. Store them somewhere safe. Don't commit them to public repos.
+Keys can't be recovered after creation. Copy it immediately when generated. Don't commit keys to public repos.
 </Warning>
